@@ -1,6 +1,6 @@
 # Analizador semántico
 
-**Responsable:** P3  ·  **Estado:** Pendiente
+**Responsable:** Fabio Mijango  ·  **Estado:** Pendiente
 
 ## Qué recibe
 El AST del parser.

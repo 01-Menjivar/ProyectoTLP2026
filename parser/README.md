@@ -1,6 +1,6 @@
 # Parser (analizador sintáctico) y AST
 
-**Responsable:** P2  ·  **Estado:** Pendiente
+**Responsable:** Kattia Santana  ·  **Estado:** Pendiente
 
 ## Qué recibe
 La lista de tokens del lexer.

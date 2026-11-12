@@ -16,10 +16,10 @@ si (manzanas > 2) {          ->       if manzanas > 2:
 | Rol | Nombre | Módulo | Rama de trabajo |
 |---|---|---|---|
 | P1 | Juan Carlos Sibrian | Analizador léxico + corpus de pruebas | `p1-lexer` |
-| P2 | _______________ | Parser, AST y errores sintácticos | `p2-parser` |
-| P3 | _______________ | Analizador semántico y tabla de símbolos | `p3-semantico` |
-| P4 | _______________ | Generador de código Python y reportes | `p4-generador` |
-| P5 | _______________ | Integración, pruebas, informe y presentación | `p5-integracion` |
+| P2 | Kattia Sarai Santan Soriano | Parser, AST y errores sintácticos | `p2-parser` |
+| P3 | Gabriela Sofia Quinteros Ramirez | Analizador semántico y tabla de símbolos | `p3-semantico` |
+| P4 | Fabio Mijango | Generador de código Python y reportes | `p4-generador` |
+| P5 | Oscar Ernesto Menjivar Ayala | Integración, pruebas, informe y presentación | `p5-integracion` |
 
 ## Estructura del repositorio
 
@@ -64,5 +64,4 @@ errores, `programa.py`.
 - [Lenguaje Manzana](docs/lenguaje_manzana.md): tokens, gramática, reglas semánticas y traducción a Python.
 - [Contratos entre módulos](docs/contratos.md): formatos de token, AST, errores y firmas de funciones.
 - [Tablero de tareas de la Fase 1](docs/tablero_fase1.md)
-- [Plan de trabajo (PDF)](docs/plan_de_trabajo.pdf)
 - [Informe](docs/informe/): una sección por integrante.

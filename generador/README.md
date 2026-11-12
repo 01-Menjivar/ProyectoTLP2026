@@ -1,6 +1,6 @@
 # Generador de código Python y reportes
 
-**Responsable:** P4  ·  **Estado:** Pendiente
+**Responsable:** Gabriela Sofia  ·  **Estado:** Pendiente
 
 ## Qué recibe
 El AST anotado, ya validado por el semántico.
