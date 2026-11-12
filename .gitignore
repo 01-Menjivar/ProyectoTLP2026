@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Editores y sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Salidas generadas al compilar (no se versionan)
+salida/
+tokens.txt
+tabla_simbolos.txt
+errores.txt
+programa.py
