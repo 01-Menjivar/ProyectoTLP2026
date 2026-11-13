@@ -97,7 +97,7 @@ Los errores de una misma fase se reportan todos juntos.
 > Pendiente de confirmar con el profesor: si los "3 archivos" son estos tres de salida o los tres
 > módulos (lexer, parser, semántico). La estructura sirve para ambos casos.
 
-## 7. Convención del corpus de pruebas
+## 7. Convención de pruebas
 
 Cada programa de `pruebas/ejemplos/` lleva en la **primera línea** el resultado esperado:
 

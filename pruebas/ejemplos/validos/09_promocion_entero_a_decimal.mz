@@ -1,0 +1,9 @@
+// ESPERADO: ok
+// Caso: un entero cabe en un decimal (promoción); al revés no
+decimal precio = 3;
+decimal total = precio * 2;
+entero unidades = 4;
+decimal costo = unidades * 1.5;
+total = unidades;
+imprimir(total);
+imprimir(costo);

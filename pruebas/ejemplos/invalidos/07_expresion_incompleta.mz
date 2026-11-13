@@ -1,0 +1,4 @@
+// ESPERADO: error sintactico linea 4
+// Caso: a la suma le falta el segundo operando
+entero x = 5;
+x = x + ;

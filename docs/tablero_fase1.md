@@ -3,19 +3,19 @@
 Marcar con `[x]` al terminar. P1 y P2 viajan: todo lo suyo termina el **domingo 15**.
 
 ## Todos
-- [ ] Contratos congelados (`docs/contratos.md`) y repositorio creado con las 5 personas y el docente invitados
+- [x] Contratos congelados (`docs/contratos.md`) y repositorio creado con las 5 personas y el docente invitados
 - [ ] Cada quien creó su rama
 - [ ] Domingo 15: P1 y P2 subieron código, README y grabación de traspaso
 - [ ] Miércoles 18: ensayo con demo en vivo y entrega
 - [ ] Jueves 19: presentación
 
 ## P1: léxico y corpus
-- [ ] Lexer completo con errores léxicos, línea y columna (jue 12)
-- [ ] Tokens reales entregados a P2 (jue 12)
-- [ ] 15 pruebas unitarias o más (vie 13)
-- [ ] Corpus de 20 programas `.mz`: 10 válidos y 10 inválidos (vie 13)
-- [ ] Sección del informe: léxico y lenguajes regulares (sáb 14)
-- [ ] README del módulo y sesión de traspaso grabada (dom 15)
+- [x] Lexer completo con errores léxicos, línea y columna (jue 12)
+- [x] Tokens reales entregados a P2 (jue 12)
+- [x] 15 pruebas unitarias o más (vie 13)
+- [x] Corpus de 20 programas `.mz`: 10 válidos y 10 inválidos (vie 13)
+- [] Sección del informe: léxico y lenguajes regulares (sáb 14)
+- [x] README del módulo y sesión de traspaso grabada (dom 15)
 
 ## P2: parser y AST
 - [ ] Gramática LL(1): FIRST y FOLLOW (mar 10 a mié 11)

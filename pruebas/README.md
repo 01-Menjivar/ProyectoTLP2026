@@ -1,6 +1,6 @@
 # Pruebas
 
-- `ejemplos/validos/` y `ejemplos/invalidos/`: el corpus de programas `.mz` (lo escribe P1).
+- `ejemplos/validos/` y `ejemplos/invalidos/`: el corpus de programas `.mz`.
 - Pruebas unitarias por módulo: `test_lexer.py`, `test_parser.py`, `test_semantico.py`,
   `test_generador.py`. Se corren desde la raíz con:
 

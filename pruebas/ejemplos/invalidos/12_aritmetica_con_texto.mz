@@ -1,0 +1,4 @@
+// ESPERADO: error semantico linea 4
+// Caso (S4): no se puede restar un número a un texto
+texto t = "a";
+texto r = t - 1;

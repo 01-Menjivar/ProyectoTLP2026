@@ -1,0 +1,4 @@
+// ESPERADO: error lexico linea 4
+// Caso: falta la comilla de cierre del texto
+entero n = 1;
+texto saludo = "hola mundo;

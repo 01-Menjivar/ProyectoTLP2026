@@ -1,0 +1,16 @@
+// ESPERADO: ok
+// Caso: comparaciones y operadores lógicos y, o, no
+entero p = 7;
+entero q = 3;
+booleano mayor = p > q;
+booleano igual = p == q;
+booleano distinto = p != q;
+booleano rango = p >= 5 y q <= 5;
+booleano alguno = p < 0 o q > 0;
+booleano negado = no mayor;
+booleano compuesto = no (p == q) y (q < p o p < 0);
+
+imprimir(rango);
+imprimir(alguno);
+imprimir(negado);
+imprimir(compuesto);

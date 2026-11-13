@@ -1,0 +1,6 @@
+// ESPERADO: error semantico linea 6
+// Caso (S8): una variable declarada dentro de un bloque no existe afuera
+si (verdadero) {
+    entero dentro = 1;
+}
+imprimir(dentro);

@@ -1,0 +1,13 @@
+// ESPERADO: ok
+// Caso: un bloque abre un ámbito nuevo; se puede reusar un nombre adentro
+entero x = 1;
+{
+    entero x = 2;
+    imprimir(x);
+}
+imprimir(x);
+
+mientras (x < 3) {
+    entero paso = 1;
+    x = x + paso;
+}

@@ -1,0 +1,15 @@
+// ESPERADO: ok
+// Caso: los cuatro tipos de dato, con y sin valor inicial
+entero edad = 18;
+decimal altura = 1.75;
+texto nombre = "Ana";
+booleano activo = verdadero;
+
+entero contador;
+contador = 0;
+
+imprimir(nombre);
+imprimir(edad);
+imprimir(altura);
+imprimir(activo);
+imprimir(contador);

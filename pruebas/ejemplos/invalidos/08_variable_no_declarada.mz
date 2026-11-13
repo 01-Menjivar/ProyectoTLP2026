@@ -1,0 +1,4 @@
+// ESPERADO: error semantico linea 4
+// Caso (S1): se usa una variable que nunca se declaró
+entero a = 1;
+total = a + 1;
