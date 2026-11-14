@@ -32,10 +32,8 @@ ProyectoTLP2026/
 ├── lexer/          lexer.py: analizador léxico (P1)
 ├── semantico/      semantico.py: analizador semántico, tabla de símbolos y reglas de tipos (P3 y P4)
 ├── parser/         nodo.py: AST mínimo que consume el semántico (P2)
-├── pruebas/        test_lexer.py y el corpus de programas .c (ejemplos/validos, ejemplos/invalidos)
-├── docs/           especificación de tokens, lenguaje, contratos, tablero, plan e informe
-├── generador/      heredado del plan anterior; no es objetivo de la Fase 1
-├── main.py         heredado del plan anterior; no es objetivo de la Fase 1
+├── pruebas/        test_lexer.py, test_semantico.py y el corpus de programas .c (ejemplos/validos, ejemplos/invalidos)
+├── docs/           especificación de tokens, lenguaje mini-C y contratos entre módulos
 ├── CONTRIBUTING.md     cómo trabajamos con Git (leer antes de empezar)
 └── README.md
 ```
@@ -49,7 +47,7 @@ Todos los comandos se corren desde la raíz del repositorio.
 # Analizador léxico: imprime los tokens y los errores léxicos, y crea salida/tokens.txt y salida/errores.txt
 python -m lexer.lexer pruebas/ejemplos/validos/ejemplo.c
 
-# Pruebas del lexer y del corpus (deben terminar en OK)
+# Pruebas del lexer, del semántico y del corpus (deben terminar en OK)
 python -m unittest discover pruebas
 
 # Analizador semántico: (P3 completa el comando cuando entregue el módulo)
@@ -94,6 +92,3 @@ _Enlace pendiente (máximo 10 minutos; lo sube P5)._
 - [Especificación formal de tokens](docs/tokens.md): expresiones regulares de cada token y errores léxicos.
 - [El lenguaje mini-C](docs/lenguaje_c.md): alcance y reglas semánticas S1 a S10.
 - [Contratos entre módulos](docs/contratos.md): formatos de token, error, AST, tabla de símbolos y funciones.
-- [Tablero de tareas de la Fase 1](docs/tablero_fase1.md)
-- [Plan de trabajo (PDF)](docs/plan_de_trabajo.pdf)
-- [Informe](docs/informe/): material de la Fase 2.
