@@ -1,9 +1,0 @@
-// ESPERADO: ok
-// Caso: ciclo mientras que acumula una suma
-entero i = 1;
-entero suma = 0;
-mientras (i <= 10) {
-    suma = suma + i;
-    i = i + 1;
-}
-imprimir(suma);

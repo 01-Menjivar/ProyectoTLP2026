@@ -1,4 +1,4 @@
 // ESPERADO: error lexico linea 4
 // Caso: el carácter @ no pertenece al lenguaje
-entero base = 10;
-entero total = base @ 2;
+int base = 10;
+int total = base @ 2;

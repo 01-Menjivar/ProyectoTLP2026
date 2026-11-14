@@ -1,3 +1,0 @@
-// ESPERADO: error semantico linea 3
-// Caso (S3): no se puede guardar un texto en una variable entera
-entero n = "hola";

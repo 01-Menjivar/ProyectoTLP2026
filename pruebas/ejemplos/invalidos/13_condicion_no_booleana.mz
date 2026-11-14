@@ -1,6 +1,0 @@
-// ESPERADO: error semantico linea 4
-// Caso (S5): la condición del si debe ser booleana
-entero n = 5;
-si (n) {
-    imprimir(n);
-}

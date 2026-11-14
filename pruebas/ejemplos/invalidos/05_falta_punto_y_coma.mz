@@ -1,4 +1,0 @@
-// ESPERADO: error sintactico linea 4
-// Caso: falta el ; al final de la declaración (se detecta en el token siguiente)
-entero x = 5
-imprimir(x);

@@ -1,13 +1,13 @@
 // ESPERADO: ok
 // Caso: un bloque abre un ámbito nuevo; se puede reusar un nombre adentro
-entero x = 1;
+int x = 1;
 {
-    entero x = 2;
-    imprimir(x);
+    int x = 2;
+    printf("%d\n", x);
 }
-imprimir(x);
+printf("%d\n", x);
 
-mientras (x < 3) {
-    entero paso = 1;
+while (x < 3) {
+    int paso = 1;
     x = x + paso;
 }

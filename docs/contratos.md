@@ -1,111 +1,94 @@
-# Contratos entre módulos
+# Contratos entre módulos (Fase 1)
 
-Se congelan el **primer día**. Un cambio posterior se avisa a todo el grupo antes de hacerlo.
+Se congelan lo antes posible. Un cambio posterior se avisa a todo el grupo antes de hacerlo.
 Las secciones marcadas **(propuesta)** las confirma o ajusta su responsable.
 
 ## 1. Token (P1)
 
 Tupla con nombre `Token(tipo, lexema, linea, columna)`. Línea y columna empiezan en 1.
-La lista de tokens **siempre termina con un token `EOF`**. Los textos conservan las comillas en el lexema.
+La lista de tokens **siempre termina con un token `EOF`**. Los literales `CARACTER` y `CADENA` conservan las comillas.
+La especificación formal (expresiones regulares) está en `docs/tokens.md`.
 
 | Grupo | Tipos de token |
 |---|---|
-| Datos | `TIPO` (lexema: entero, decimal, texto o booleano) |
-| Reservadas | `SI SINO MIENTRAS IMPRIMIR VERDADERO FALSO Y O NO` |
-| Literales y nombres | `ID ENTERO DECIMAL TEXTO` |
-| Operadores | `MAS MENOS POR DIVIDIDO MODULO` · `IGUAL IGUAL_IGUAL DIFERENTE MENOR MAYOR MENOR_IGUAL MAYOR_IGUAL` |
+| Tipos de dato | `TIPO` (lexema: `int`, `float` o `char`) |
+| Reservadas | `IF ELSE WHILE PRINTF` |
+| Nombres y literales | `ID ENTERO FLOTANTE CARACTER CADENA` |
+| Aritméticos | `MAS MENOS POR DIVIDIDO MODULO` |
+| Asignación y comparación | `IGUAL IGUAL_IGUAL DIFERENTE MENOR MAYOR MENOR_IGUAL MAYOR_IGUAL` |
+| Lógicos | `Y_LOGICO O_LOGICO NO_LOGICO` |
 | Delimitadores | `PAREN_IZQ PAREN_DER LLAVE_IZQ LLAVE_DER PUNTOYCOMA COMA` |
 | Fin | `EOF` |
 
-En JSON cada token es `[tipo, lexema, linea, columna]`.
+En JSON cada token es `[tipo, lexema, linea, columna]`. Ejemplo: `lexer/tokens_ejemplo.json`.
 
 ## 2. Error (todos)
 
 ```python
-{"fase": "lexico" | "sintactico" | "semantico", "linea": 3, "columna": 14, "mensaje": "..."}
+{"fase": "lexico" | "semantico", "linea": 3, "columna": 14, "mensaje": "..."}
 ```
 
-Los avisos (S9) usan `"fase": "semantico"` y `"mensaje"` que empieza con `Aviso:`.
+El mensaje indica **la causa**. Los avisos (S9) usan `"fase": "semantico"` y un mensaje que empieza con `Aviso:`.
 
-## 3. AST (P2) (propuesta)
+## 3. Representación para el semántico: AST mínimo (P2) (propuesta)
 
-Clase `Nodo` en `parser/nodo.py`: `Nodo(tipo, hijos, valor, linea, tipo_dato=None)`.
-`tipo_dato` es `None` al salir del parser; el semántico lo llena con `entero`, `decimal`,
-`texto` o `booleano` en cada expresión (los literales ya lo traen puesto por el parser).
-Exporta a JSON con `a_json()`.
+El PDF permite que el semántico trabaje sobre "un AST mínimo construido a mano". Clase `Nodo` en
+`parser/nodo.py`: `Nodo(tipo, hijos, valor, linea, tipo_dato=None)`. El semántico llena `tipo_dato`
+(`int`, `float`, `char` o `cadena`) en cada expresión; los literales ya lo traen puesto.
 
 | `tipo` del nodo | `valor` | `hijos` |
 |---|---|---|
 | `Programa` | | sentencias |
-| `Declaracion` | `{"tipo_dato": "entero", "nombre": "x"}` | `[expresion]` o `[]` si no tiene valor inicial |
+| `Declaracion` | `{"tipo_dato": "int", "nombre": "x"}` | `[expresion]` o `[]` si no tiene valor inicial |
 | `Asignacion` | nombre de la variable | `[expresion]` |
-| `Si` | | `[condicion, bloque]` o `[condicion, bloque, bloque_sino]` |
+| `Si` | | `[condicion, bloque]` o `[condicion, bloque, bloque_else]` |
 | `Mientras` | | `[condicion, bloque]` |
-| `Imprimir` | | `[expresion]` |
+| `Printf` | | `[cadena, argumento1, argumento2, ...]` |
 | `Bloque` | | sentencias |
-| `OpBinario` | operador (`"+"`, `"=="`, `"y"`, ...) | `[izquierda, derecha]` |
-| `OpUnario` | `"-"` o `"no"` | `[operando]` |
+| `OpBinario` | operador (`"+"`, `"=="`, `"&&"`, ...) | `[izquierda, derecha]` |
+| `OpUnario` | `"-"` o `"!"` | `[operando]` |
 | `Literal` | lexema tal cual | |
 | `Variable` | nombre | |
 
-## 4. Tabla de símbolos (P3)
+El tipo de un `Literal` sale del token: `ENTERO` es `int`, `FLOTANTE` es `float`, `CARACTER` es `char`, `CADENA` es `cadena`.
 
-Lista de diccionarios, una fila por variable declarada:
+## 4. Tabla de símbolos (P3) y reglas de tipos (P4)
 
 ```python
-{"nombre": "manzanas", "tipo": "entero", "ambito": 0, "linea": 2}
+# Tabla de símbolos
+tabla.abrir_ambito()                   tabla.cerrar_ambito()
+tabla.declarar(nombre, tipo, linea)    # False si ya existe en el ámbito actual
+tabla.buscar(nombre)                   # {'tipo': ..., 'linea': ...} o None
+
+# Reglas de tipos
+tipo_expresion(nodo, tabla, errores)   # 'int' | 'float' | 'char' | 'cadena' | None (si hubo error)
+asignable(tipo_destino, tipo_valor)    # True si el valor cabe en el destino (solo ensanchar)
 ```
 
-`ambito` es el nivel de anidación: 0 es el global y cada bloque suma 1.
+Un error de tipo no se encadena: si una subexpresión ya dio error, `tipo_expresion` devuelve `None` y no se reportan más errores por ella.
 
-## 5. Funciones de cada módulo (firmas)
+## 5. Funciones de cada módulo
 
 ```python
 # lexer/lexer.py            (P1)
 def analizar(codigo: str) -> Tuple[List[Token], List[dict]]
 
-# parser/parser.py          (P2)
-def analizar(tokens: List[Token]) -> Tuple[Optional[Nodo], List[dict]]
-
 # semantico/semantico.py    (P3)
 def analizar(ast: Nodo) -> Tuple[Nodo, List[dict], List[dict]]
-#            ^ AST anotado, tabla de simbolos, errores
-
-# generador/generador.py    (P4)
-def generar(ast: Nodo) -> str            # devuelve el codigo Python
-
-# generador/reportes.py     (P4)
-def escribir_tokens(tokens, ruta)
-def escribir_tabla_simbolos(tabla, ruta)
-def escribir_errores(errores, ruta)
+#            ^ AST anotado, tabla de símbolos (lista de dicts), errores y avisos
 ```
 
-Cada fase corre **solo si la anterior no dio errores** (los avisos no cuentan como errores).
-Los errores de una misma fase se reportan todos juntos.
+La tabla de símbolos que devuelve el semántico es una lista de `{"nombre", "tipo", "ambito", "linea"}`.
 
-## 6. Archivos de salida
-
-`python main.py programa.mz` escribe en `salida/`:
-
-| Archivo | Contenido |
-|---|---|
-| `tokens.txt` | Un token por línea: `LINEA:COL  TIPO  LEXEMA` |
-| `tabla_simbolos.txt` | Una variable por línea: nombre, tipo, ámbito, línea |
-| `errores.txt` | Un error por línea: `[fase] línea N, columna M: mensaje` |
-| `programa.py` | Código Python generado (solo si no hay errores) |
-
-> Pendiente de confirmar con el profesor: si los "3 archivos" son estos tres de salida o los tres
-> módulos (lexer, parser, semántico). La estructura sirve para ambos casos.
-
-## 7. Convención de pruebas
+## 6. Convención del corpus de pruebas
 
 Cada programa de `pruebas/ejemplos/` lleva en la **primera línea** el resultado esperado:
 
 ```
 // ESPERADO: ok
 // ESPERADO: error lexico linea 3
-// ESPERADO: error sintactico linea 5
-// ESPERADO: error semantico linea 2
+// ESPERADO: error semantico linea 4
 ```
 
-Nombres de archivo: `NN_descripcion.mz` (por ejemplo `07_variable_no_declarada.mz`).
+Nombres de archivo: `NN_descripcion.c`. Un programa inválido tiene **un solo error** (salvo
+`07_varios_errores_lexicos`). La línea cuenta desde la línea 1 del archivo, incluidos los comentarios del encabezado.

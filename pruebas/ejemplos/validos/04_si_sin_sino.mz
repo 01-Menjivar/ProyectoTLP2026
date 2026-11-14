@@ -1,6 +1,0 @@
-// ESPERADO: ok
-// Caso: condicional sin rama sino
-entero nota = 85;
-si (nota >= 60) {
-    imprimir("Aprobado");
-}

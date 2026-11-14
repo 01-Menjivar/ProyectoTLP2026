@@ -1,9 +1,0 @@
-// ESPERADO: ok
-// Caso: textos, concatenación con + y comparación con ==
-texto nombre = "Ana";
-texto saludo = "Hola, " + nombre;
-booleano esAna = nombre == "Ana";
-imprimir(saludo);
-si (esAna) {
-    imprimir("Es Ana");
-}

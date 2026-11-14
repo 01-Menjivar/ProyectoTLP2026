@@ -1,3 +1,3 @@
 // ESPERADO: error lexico linea 3
 // Caso: un número pegado a una letra está mal formado
-entero cantidad = 3a;
+int cantidad = 3a;

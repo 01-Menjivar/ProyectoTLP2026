@@ -1,6 +1,0 @@
-// ESPERADO: error sintactico linea 4
-// Caso: falta el paréntesis que cierra la condición
-entero x = 5;
-si (x > 3 {
-    imprimir(x);
-}

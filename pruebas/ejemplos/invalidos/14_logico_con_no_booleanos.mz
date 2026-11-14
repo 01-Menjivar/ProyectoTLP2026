@@ -1,3 +1,0 @@
-// ESPERADO: error semantico linea 3
-// Caso (S6): el operador y solo acepta booleanos
-booleano b = 5 y verdadero;
