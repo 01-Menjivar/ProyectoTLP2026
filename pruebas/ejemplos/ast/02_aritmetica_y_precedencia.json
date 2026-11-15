@@ -1,0 +1,445 @@
+{
+  "tipo": "Programa",
+  "valor": null,
+  "linea": 1,
+  "tipo_dato": null,
+  "hijos": [
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "int",
+        "nombre": "a"
+      },
+      "linea": 3,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Literal",
+          "valor": "10",
+          "linea": 3,
+          "tipo_dato": "int",
+          "hijos": []
+        }
+      ]
+    },
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "int",
+        "nombre": "b"
+      },
+      "linea": 4,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Literal",
+          "valor": "3",
+          "linea": 4,
+          "tipo_dato": "int",
+          "hijos": []
+        }
+      ]
+    },
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "int",
+        "nombre": "suma"
+      },
+      "linea": 5,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "OpBinario",
+          "valor": "+",
+          "linea": 5,
+          "tipo_dato": null,
+          "hijos": [
+            {
+              "tipo": "Variable",
+              "valor": "a",
+              "linea": 5,
+              "tipo_dato": null,
+              "hijos": []
+            },
+            {
+              "tipo": "Variable",
+              "valor": "b",
+              "linea": 5,
+              "tipo_dato": null,
+              "hijos": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "int",
+        "nombre": "resta"
+      },
+      "linea": 6,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "OpBinario",
+          "valor": "-",
+          "linea": 6,
+          "tipo_dato": null,
+          "hijos": [
+            {
+              "tipo": "Variable",
+              "valor": "a",
+              "linea": 6,
+              "tipo_dato": null,
+              "hijos": []
+            },
+            {
+              "tipo": "Variable",
+              "valor": "b",
+              "linea": 6,
+              "tipo_dato": null,
+              "hijos": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "int",
+        "nombre": "producto"
+      },
+      "linea": 7,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "OpBinario",
+          "valor": "*",
+          "linea": 7,
+          "tipo_dato": null,
+          "hijos": [
+            {
+              "tipo": "Variable",
+              "valor": "a",
+              "linea": 7,
+              "tipo_dato": null,
+              "hijos": []
+            },
+            {
+              "tipo": "Variable",
+              "valor": "b",
+              "linea": 7,
+              "tipo_dato": null,
+              "hijos": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "int",
+        "nombre": "cociente"
+      },
+      "linea": 8,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "OpBinario",
+          "valor": "/",
+          "linea": 8,
+          "tipo_dato": null,
+          "hijos": [
+            {
+              "tipo": "Variable",
+              "valor": "a",
+              "linea": 8,
+              "tipo_dato": null,
+              "hijos": []
+            },
+            {
+              "tipo": "Variable",
+              "valor": "b",
+              "linea": 8,
+              "tipo_dato": null,
+              "hijos": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "int",
+        "nombre": "resto"
+      },
+      "linea": 9,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "OpBinario",
+          "valor": "%",
+          "linea": 9,
+          "tipo_dato": null,
+          "hijos": [
+            {
+              "tipo": "Variable",
+              "valor": "a",
+              "linea": 9,
+              "tipo_dato": null,
+              "hijos": []
+            },
+            {
+              "tipo": "Variable",
+              "valor": "b",
+              "linea": 9,
+              "tipo_dato": null,
+              "hijos": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "int",
+        "nombre": "mezcla"
+      },
+      "linea": 10,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "OpBinario",
+          "valor": "+",
+          "linea": 10,
+          "tipo_dato": null,
+          "hijos": [
+            {
+              "tipo": "Literal",
+              "valor": "2",
+              "linea": 10,
+              "tipo_dato": "int",
+              "hijos": []
+            },
+            {
+              "tipo": "OpBinario",
+              "valor": "*",
+              "linea": 10,
+              "tipo_dato": null,
+              "hijos": [
+                {
+                  "tipo": "Literal",
+                  "valor": "3",
+                  "linea": 10,
+                  "tipo_dato": "int",
+                  "hijos": []
+                },
+                {
+                  "tipo": "Literal",
+                  "valor": "4",
+                  "linea": 10,
+                  "tipo_dato": "int",
+                  "hijos": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "int",
+        "nombre": "agrupado"
+      },
+      "linea": 11,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "OpBinario",
+          "valor": "*",
+          "linea": 11,
+          "tipo_dato": null,
+          "hijos": [
+            {
+              "tipo": "OpBinario",
+              "valor": "+",
+              "linea": 11,
+              "tipo_dato": null,
+              "hijos": [
+                {
+                  "tipo": "Literal",
+                  "valor": "2",
+                  "linea": 11,
+                  "tipo_dato": "int",
+                  "hijos": []
+                },
+                {
+                  "tipo": "Literal",
+                  "valor": "3",
+                  "linea": 11,
+                  "tipo_dato": "int",
+                  "hijos": []
+                }
+              ]
+            },
+            {
+              "tipo": "Literal",
+              "valor": "4",
+              "linea": 11,
+              "tipo_dato": "int",
+              "hijos": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "int",
+        "nombre": "negativo"
+      },
+      "linea": 12,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "OpUnario",
+          "valor": "-",
+          "linea": 12,
+          "tipo_dato": null,
+          "hijos": [
+            {
+              "tipo": "Variable",
+              "valor": "a",
+              "linea": 12,
+              "tipo_dato": null,
+              "hijos": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "float",
+        "nombre": "promedio"
+      },
+      "linea": 13,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "OpBinario",
+          "valor": "/",
+          "linea": 13,
+          "tipo_dato": null,
+          "hijos": [
+            {
+              "tipo": "OpBinario",
+              "valor": "+",
+              "linea": 13,
+              "tipo_dato": null,
+              "hijos": [
+                {
+                  "tipo": "Variable",
+                  "valor": "a",
+                  "linea": 13,
+                  "tipo_dato": null,
+                  "hijos": []
+                },
+                {
+                  "tipo": "Variable",
+                  "valor": "b",
+                  "linea": 13,
+                  "tipo_dato": null,
+                  "hijos": []
+                }
+              ]
+            },
+            {
+              "tipo": "Literal",
+              "valor": "2.0",
+              "linea": 13,
+              "tipo_dato": "float",
+              "hijos": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "Printf",
+      "valor": null,
+      "linea": 15,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Literal",
+          "valor": "\"%d\\n\"",
+          "linea": 15,
+          "tipo_dato": "cadena",
+          "hijos": []
+        },
+        {
+          "tipo": "Variable",
+          "valor": "mezcla",
+          "linea": 15,
+          "tipo_dato": null,
+          "hijos": []
+        }
+      ]
+    },
+    {
+      "tipo": "Printf",
+      "valor": null,
+      "linea": 16,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Literal",
+          "valor": "\"%d\\n\"",
+          "linea": 16,
+          "tipo_dato": "cadena",
+          "hijos": []
+        },
+        {
+          "tipo": "Variable",
+          "valor": "agrupado",
+          "linea": 16,
+          "tipo_dato": null,
+          "hijos": []
+        }
+      ]
+    },
+    {
+      "tipo": "Printf",
+      "valor": null,
+      "linea": 17,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Literal",
+          "valor": "\"%f\\n\"",
+          "linea": 17,
+          "tipo_dato": "cadena",
+          "hijos": []
+        },
+        {
+          "tipo": "Variable",
+          "valor": "promedio",
+          "linea": 17,
+          "tipo_dato": null,
+          "hijos": []
+        }
+      ]
+    }
+  ]
+}

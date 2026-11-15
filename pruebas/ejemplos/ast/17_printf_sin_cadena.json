@@ -1,0 +1,41 @@
+{
+  "tipo": "Programa",
+  "valor": null,
+  "linea": 1,
+  "tipo_dato": null,
+  "hijos": [
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "int",
+        "nombre": "x"
+      },
+      "linea": 3,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Literal",
+          "valor": "1",
+          "linea": 3,
+          "tipo_dato": "int",
+          "hijos": []
+        }
+      ]
+    },
+    {
+      "tipo": "Printf",
+      "valor": null,
+      "linea": 4,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Variable",
+          "valor": "x",
+          "linea": 4,
+          "tipo_dato": null,
+          "hijos": []
+        }
+      ]
+    }
+  ]
+}

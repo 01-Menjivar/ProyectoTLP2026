@@ -31,8 +31,8 @@ Un programa es una secuencia de sentencias (sin `main` ni funciones propias). El
 ProyectoTLP2026/
 ├── lexer/          lexer.py: analizador léxico (P1)
 ├── semantico/      semantico.py: analizador semántico, tabla de símbolos y reglas de tipos (P3 y P4)
-├── parser/         nodo.py: AST mínimo que consume el semántico (P2)
-├── pruebas/        test_lexer.py, test_semantico.py y el corpus de programas .c (ejemplos/validos, ejemplos/invalidos)
+├── parser/         nodo.py (AST mínimo) y convertidor.py (tokens a AST) que consume el semántico (P2)
+├── pruebas/        test_lexer.py, test_ast.py, test_convertidor.py, test_semantico.py y el corpus de programas .c (ejemplos/validos, ejemplos/invalidos)
 ├── docs/           especificación de tokens, lenguaje mini-C y contratos entre módulos
 ├── CONTRIBUTING.md     cómo trabajamos con Git (leer antes de empezar)
 └── README.md
@@ -50,6 +50,9 @@ python -m lexer.lexer pruebas/ejemplos/validos/ejemplo.c
 # Pruebas del lexer, del AST, del semántico y del corpus (deben terminar en OK)
 python -m unittest discover pruebas
 
+# AST de un programa (lo que recibe el semántico): imprime el árbol en JSON
+python -m parser.convertidor pruebas/ejemplos/validos/ejemplo.c
+
 # Analizador semántico: (P3 completa el comando cuando entregue el módulo)
 ```
 
@@ -66,7 +69,7 @@ esperado (`// ESPERADO: ok`, `// ESPERADO: error lexico linea 4`). El índice co
 |---|---|---|
 | Léxico y especificación de tokens | P1 | Listo |
 | Corpus de pruebas | P1 | Listo |
-| AST mínimo | P2 | Listo |
+| AST mínimo y convertidor de tokens a AST | P2 | Listo |
 | Semántico: tabla de símbolos y ámbitos | P3 | Pendiente |
 | Semántico: reglas de tipos | P4 | Pendiente |
 | Ejecutor de pruebas y video | P5 | Pendiente |

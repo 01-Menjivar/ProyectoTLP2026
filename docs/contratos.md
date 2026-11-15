@@ -25,9 +25,10 @@ En JSON cada token es `[tipo, lexema, linea, columna]`. Ejemplo: `lexer/tokens_e
 ## 2. Error (todos)
 
 ```python
-{"fase": "lexico" | "semantico", "linea": 3, "columna": 14, "mensaje": "..."}
+{"fase": "lexico" | "sintactico" | "semantico", "linea": 3, "columna": 14, "mensaje": "..."}
 ```
 
+`sintactico` lo produce `parser/convertidor.py` cuando la forma del programa no cumple la gramática.
 El mensaje indica **la causa**. Los avisos (S9) usan `"fase": "semantico"` y un mensaje que empieza con `Aviso:`.
 
 ## 3. Representación para el semántico: AST mínimo (P2)
@@ -72,6 +73,10 @@ Un error de tipo no se encadena: si una subexpresión ya dio error, `tipo_expres
 ## 5. Funciones de cada módulo
 
 ```python
+# parser/convertidor.py     (P2)
+def codigo_a_ast(codigo: str) -> Tuple[Optional[Nodo], List[dict]]   # (AST o None, errores léxicos/sintácticos)
+def tokens_a_ast(tokens: List[Token]) -> Tuple[Optional[Nodo], List[dict]]
+
 # lexer/lexer.py            (P1)
 def analizar(codigo: str) -> Tuple[List[Token], List[dict]]
 

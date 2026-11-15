@@ -1,0 +1,132 @@
+{
+  "tipo": "Programa",
+  "valor": null,
+  "linea": 1,
+  "tipo_dato": null,
+  "hijos": [
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "char",
+        "nombre": "letra"
+      },
+      "linea": 3,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Literal",
+          "valor": "'a'",
+          "linea": 3,
+          "tipo_dato": "char",
+          "hijos": []
+        }
+      ]
+    },
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "int",
+        "nombre": "codigo"
+      },
+      "linea": 4,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Variable",
+          "valor": "letra",
+          "linea": 4,
+          "tipo_dato": null,
+          "hijos": []
+        }
+      ]
+    },
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "float",
+        "nombre": "real"
+      },
+      "linea": 5,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Variable",
+          "valor": "codigo",
+          "linea": 5,
+          "tipo_dato": null,
+          "hijos": []
+        }
+      ]
+    },
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "float",
+        "nombre": "suma"
+      },
+      "linea": 6,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "OpBinario",
+          "valor": "+",
+          "linea": 6,
+          "tipo_dato": null,
+          "hijos": [
+            {
+              "tipo": "Variable",
+              "valor": "letra",
+              "linea": 6,
+              "tipo_dato": null,
+              "hijos": []
+            },
+            {
+              "tipo": "Literal",
+              "valor": "1.5",
+              "linea": 6,
+              "tipo_dato": "float",
+              "hijos": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "Asignacion",
+      "valor": "real",
+      "linea": 7,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Variable",
+          "valor": "codigo",
+          "linea": 7,
+          "tipo_dato": null,
+          "hijos": []
+        }
+      ]
+    },
+    {
+      "tipo": "Printf",
+      "valor": null,
+      "linea": 8,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Literal",
+          "valor": "\"%f\\n\"",
+          "linea": 8,
+          "tipo_dato": "cadena",
+          "hijos": []
+        },
+        {
+          "tipo": "Variable",
+          "valor": "real",
+          "linea": 8,
+          "tipo_dato": null,
+          "hijos": []
+        }
+      ]
+    }
+  ]
+}

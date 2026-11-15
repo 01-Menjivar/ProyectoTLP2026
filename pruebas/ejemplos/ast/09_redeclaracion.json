@@ -1,0 +1,44 @@
+{
+  "tipo": "Programa",
+  "valor": null,
+  "linea": 1,
+  "tipo_dato": null,
+  "hijos": [
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "int",
+        "nombre": "a"
+      },
+      "linea": 3,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Literal",
+          "valor": "1",
+          "linea": 3,
+          "tipo_dato": "int",
+          "hijos": []
+        }
+      ]
+    },
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "int",
+        "nombre": "a"
+      },
+      "linea": 4,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Literal",
+          "valor": "2",
+          "linea": 4,
+          "tipo_dato": "int",
+          "hijos": []
+        }
+      ]
+    }
+  ]
+}
