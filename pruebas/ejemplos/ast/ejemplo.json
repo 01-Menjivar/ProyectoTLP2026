@@ -1,0 +1,221 @@
+{
+  "tipo": "Programa",
+  "valor": null,
+  "linea": 1,
+  "tipo_dato": null,
+  "hijos": [
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "int",
+        "nombre": "manzanas"
+      },
+      "linea": 3,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Literal",
+          "valor": "3",
+          "linea": 3,
+          "tipo_dato": "int",
+          "hijos": []
+        }
+      ]
+    },
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "float",
+        "nombre": "precio"
+      },
+      "linea": 4,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Literal",
+          "valor": "2.50",
+          "linea": 4,
+          "tipo_dato": "float",
+          "hijos": []
+        }
+      ]
+    },
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "float",
+        "nombre": "total"
+      },
+      "linea": 5,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "OpBinario",
+          "valor": "*",
+          "linea": 5,
+          "tipo_dato": null,
+          "hijos": [
+            {
+              "tipo": "Variable",
+              "valor": "manzanas",
+              "linea": 5,
+              "tipo_dato": null,
+              "hijos": []
+            },
+            {
+              "tipo": "Variable",
+              "valor": "precio",
+              "linea": 5,
+              "tipo_dato": null,
+              "hijos": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "Si",
+      "valor": null,
+      "linea": 7,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "OpBinario",
+          "valor": ">",
+          "linea": 7,
+          "tipo_dato": null,
+          "hijos": [
+            {
+              "tipo": "Variable",
+              "valor": "total",
+              "linea": 7,
+              "tipo_dato": null,
+              "hijos": []
+            },
+            {
+              "tipo": "Literal",
+              "valor": "5",
+              "linea": 7,
+              "tipo_dato": "int",
+              "hijos": []
+            }
+          ]
+        },
+        {
+          "tipo": "Bloque",
+          "valor": null,
+          "linea": 7,
+          "tipo_dato": null,
+          "hijos": [
+            {
+              "tipo": "Printf",
+              "valor": null,
+              "linea": 8,
+              "tipo_dato": null,
+              "hijos": [
+                {
+                  "tipo": "Literal",
+                  "valor": "\"Compra grande\\n\"",
+                  "linea": 8,
+                  "tipo_dato": "cadena",
+                  "hijos": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "tipo": "Bloque",
+          "valor": null,
+          "linea": 9,
+          "tipo_dato": null,
+          "hijos": [
+            {
+              "tipo": "Printf",
+              "valor": null,
+              "linea": 10,
+              "tipo_dato": null,
+              "hijos": [
+                {
+                  "tipo": "Literal",
+                  "valor": "\"Compra pequeña\\n\"",
+                  "linea": 10,
+                  "tipo_dato": "cadena",
+                  "hijos": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "Mientras",
+      "valor": null,
+      "linea": 13,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "OpBinario",
+          "valor": ">",
+          "linea": 13,
+          "tipo_dato": null,
+          "hijos": [
+            {
+              "tipo": "Variable",
+              "valor": "manzanas",
+              "linea": 13,
+              "tipo_dato": null,
+              "hijos": []
+            },
+            {
+              "tipo": "Literal",
+              "valor": "0",
+              "linea": 13,
+              "tipo_dato": "int",
+              "hijos": []
+            }
+          ]
+        },
+        {
+          "tipo": "Bloque",
+          "valor": null,
+          "linea": 13,
+          "tipo_dato": null,
+          "hijos": [
+            {
+              "tipo": "Asignacion",
+              "valor": "manzanas",
+              "linea": 14,
+              "tipo_dato": null,
+              "hijos": [
+                {
+                  "tipo": "OpBinario",
+                  "valor": "-",
+                  "linea": 14,
+                  "tipo_dato": null,
+                  "hijos": [
+                    {
+                      "tipo": "Variable",
+                      "valor": "manzanas",
+                      "linea": 14,
+                      "tipo_dato": null,
+                      "hijos": []
+                    },
+                    {
+                      "tipo": "Literal",
+                      "valor": "1",
+                      "linea": 14,
+                      "tipo_dato": "int",
+                      "hijos": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

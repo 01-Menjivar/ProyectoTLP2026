@@ -47,7 +47,7 @@ Todos los comandos se corren desde la raíz del repositorio.
 # Analizador léxico: imprime los tokens y los errores léxicos, y crea salida/tokens.txt y salida/errores.txt
 python -m lexer.lexer pruebas/ejemplos/validos/ejemplo.c
 
-# Pruebas del lexer, del semántico y del corpus (deben terminar en OK)
+# Pruebas del lexer, del AST, del semántico y del corpus (deben terminar en OK)
 python -m unittest discover pruebas
 
 # Analizador semántico: (P3 completa el comando cuando entregue el módulo)
@@ -66,7 +66,7 @@ esperado (`// ESPERADO: ok`, `// ESPERADO: error lexico linea 4`). El índice co
 |---|---|---|
 | Léxico y especificación de tokens | P1 | Listo |
 | Corpus de pruebas | P1 | Listo |
-| AST mínimo | P2 | Pendiente |
+| AST mínimo | P2 | Listo |
 | Semántico: tabla de símbolos y ámbitos | P3 | Pendiente |
 | Semántico: reglas de tipos | P4 | Pendiente |
 | Ejecutor de pruebas y video | P5 | Pendiente |
@@ -75,13 +75,19 @@ esperado (`// ESPERADO: ok`, `// ESPERADO: error lexico linea 4`). El índice co
 
 ## Reflexión: qué verificaciones no puede expresar una CFG
 
-_Pendiente: la redacta P2 (viernes 13 a domingo 15)._ Debe explicar, con ejemplos, por qué reglas como estas no caben
-en una gramática libre de contexto y se resuelven en el analizador semántico, y conectarlo con los lenguajes sensibles
-al contexto:
+Una gramática libre de contexto (tipo 2 en la jerarquía de Chomsky) solo describe **en qué orden** pueden aparecer los símbolos de un programa. Sus producciones tienen la forma `A → γ`: el no terminal de la izquierda se reemplaza sin importar qué lo rodea, y la gramática no guarda memoria de lo que ya vio. Por eso sirve para la estructura (sentencias, expresiones, bloques), pero no para reglas que dependen de información que aparece en otra parte del programa.
 
-- "Toda variable usada debe haber sido declarada antes."
-- "No se puede redeclarar una variable en el mismo ámbito."
-- La compatibilidad de tipos en asignaciones y expresiones.
+**1. Declarar antes de usar (S1).** La regla "toda variable usada debe haber sido declarada" exige recordar el conjunto de nombres declarados y compararlo con cada uso. Es la misma situación del lenguaje clásico `{ w c w }`: la segunda `w` debe repetir la primera, y ese lenguaje no es libre de contexto (se demuestra con el lema de bombeo). La gramática acepta `total = a + 1;` con cualquier identificador, exista o no. Ejemplo: [`08_variable_no_declarada.c`](pruebas/ejemplos/invalidos/08_variable_no_declarada.c).
+
+**2. No redeclarar en el mismo ámbito (S2, S8).** Además de recordar nombres, hay que saber en qué bloque estamos y qué se declaró en él. `int a = 1; int a = 2;` tiene una estructura perfectamente válida para la gramática, y lo declarado dentro de un bloque `{ }` no existe fuera de él. Ejemplos: [`09_redeclaracion.c`](pruebas/ejemplos/invalidos/09_redeclaracion.c) y [`15_variable_fuera_de_su_ambito.c`](pruebas/ejemplos/invalidos/15_variable_fuera_de_su_ambito.c).
+
+**3. Compatibilidad de tipos (S3 a S7).** La gramática acepta la forma `tipo ID = expresión;`, pero no sabe que `"hola"` es una cadena y que el destino es un `int`. Para eso hay que calcular el tipo de cada expresión y compararlo con el del destino. Ejemplo: [`10_cadena_en_entero.c`](pruebas/ejemplos/invalidos/10_cadena_en_entero.c).
+
+En los tres casos el programa es **sintácticamente correcto**: la gramática lo acepta y el analizador semántico lo rechaza, con línea y causa.
+
+**Conclusión.** Estas verificaciones se hacen en el analizador semántico con una **tabla de símbolos**, que funciona como la memoria que a la CFG le falta. Esto conecta con los lenguajes sensibles al contexto (tipo 1), cuyas reglas pueden depender del contexto en que aparece cada símbolo. Un compilador reparte así el trabajo entre los niveles de la jerarquía: lenguajes regulares para el lexer, libres de contexto para el parser y verificaciones sensibles al contexto en la fase semántica.
+
+Esa frontera es la que se retoma en la Fase 2: en el español, la concordancia de género y número a distancia es otra dependencia de contexto que una CFG no puede expresar.
 
 ## Video de la Fase 1
 

@@ -1,0 +1,71 @@
+{
+  "tipo": "Programa",
+  "valor": null,
+  "linea": 1,
+  "tipo_dato": null,
+  "hijos": [
+    {
+      "tipo": "Si",
+      "valor": null,
+      "linea": 3,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Literal",
+          "valor": "1",
+          "linea": 3,
+          "tipo_dato": "int",
+          "hijos": []
+        },
+        {
+          "tipo": "Bloque",
+          "valor": null,
+          "linea": 3,
+          "tipo_dato": null,
+          "hijos": [
+            {
+              "tipo": "Declaracion",
+              "valor": {
+                "tipo_dato": "int",
+                "nombre": "dentro"
+              },
+              "linea": 4,
+              "tipo_dato": null,
+              "hijos": [
+                {
+                  "tipo": "Literal",
+                  "valor": "1",
+                  "linea": 4,
+                  "tipo_dato": "int",
+                  "hijos": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "Printf",
+      "valor": null,
+      "linea": 6,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Literal",
+          "valor": "\"%d\\n\"",
+          "linea": 6,
+          "tipo_dato": "cadena",
+          "hijos": []
+        },
+        {
+          "tipo": "Variable",
+          "valor": "dentro",
+          "linea": 6,
+          "tipo_dato": null,
+          "hijos": []
+        }
+      ]
+    }
+  ]
+}

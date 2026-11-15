@@ -1,0 +1,26 @@
+{
+  "tipo": "Programa",
+  "valor": null,
+  "linea": 1,
+  "tipo_dato": null,
+  "hijos": [
+    {
+      "tipo": "Declaracion",
+      "valor": {
+        "tipo_dato": "int",
+        "nombre": "n"
+      },
+      "linea": 3,
+      "tipo_dato": null,
+      "hijos": [
+        {
+          "tipo": "Literal",
+          "valor": "\"hola\"",
+          "linea": 3,
+          "tipo_dato": "cadena",
+          "hijos": []
+        }
+      ]
+    }
+  ]
+}

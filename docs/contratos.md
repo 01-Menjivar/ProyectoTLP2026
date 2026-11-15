@@ -1,7 +1,7 @@
 # Contratos entre módulos (Fase 1)
 
 Se congelan lo antes posible. Un cambio posterior se avisa a todo el grupo antes de hacerlo.
-Las secciones marcadas **(propuesta)** las confirma o ajusta su responsable.
+Las secciones marcadas **(propuesta)** las confirma o ajusta su responsable (la 3 ya fue confirmada por P2).
 
 ## 1. Token (P1)
 
@@ -30,7 +30,7 @@ En JSON cada token es `[tipo, lexema, linea, columna]`. Ejemplo: `lexer/tokens_e
 
 El mensaje indica **la causa**. Los avisos (S9) usan `"fase": "semantico"` y un mensaje que empieza con `Aviso:`.
 
-## 3. Representación para el semántico: AST mínimo (P2) (propuesta)
+## 3. Representación para el semántico: AST mínimo (P2)
 
 El PDF permite que el semántico trabaje sobre "un AST mínimo construido a mano". Clase `Nodo` en
 `parser/nodo.py`: `Nodo(tipo, hijos, valor, linea, tipo_dato=None)`. El semántico llena `tipo_dato`
@@ -51,6 +51,8 @@ El PDF permite que el semántico trabaje sobre "un AST mínimo construido a mano
 | `Variable` | nombre | |
 
 El tipo de un `Literal` sale del token: `ENTERO` es `int`, `FLOTANTE` es `float`, `CARACTER` es `char`, `CADENA` es `cadena`.
+
+Los AST de ejemplo, hechos a mano, están en `pruebas/ejemplos/ast/` como JSON con las claves de `Nodo.a_dict()` (`tipo`, `valor`, `linea`, `tipo_dato`, `hijos`). Se cargan con `Nodo.desde_json(texto)` y se escriben con `nodo.a_json()`. Todo cuerpo de `Si` y `Mientras` es un `Bloque`, y `linea` cuenta desde la línea 1 del `.c`.
 
 ## 4. Tabla de símbolos (P3) y reglas de tipos (P4)
 
