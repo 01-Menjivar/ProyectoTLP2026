@@ -14,8 +14,8 @@ int n = "hola";              ->   error semántico: no se puede guardar una cade
 |---|---|---|
 | P1 | Juan Carlos Sibrian | Analizador léxico, especificación de tokens y corpus de pruebas |
 | P2 | Kattia Sarai Santan Soriano | Representación mínima (AST) para el semántico y reflexión sobre CFG |
-| P3 | Gabriela Sofia Quinteros Ramirez | Analizador semántico: tabla de símbolos, ámbitos, declaración y redeclaración |
-| P4 | Fabio Mijango | Reglas de tipos y casos de prueba semánticos |
+| P3 | Fabio Mijango | Analizador semántico: tabla de símbolos, ámbitos, declaración y redeclaración |
+| P4 | Gabriela Sofia Quinteros Ramirez | Reglas de tipos y casos de prueba semánticos |
 | P5 | Oscar Ernesto Menjivar Ayala | Ejecutor de pruebas, README, video y entrega |
 
 ## El lenguaje
@@ -53,7 +53,10 @@ python -m unittest discover pruebas
 # AST de un programa (lo que recibe el semántico): imprime el árbol en JSON
 python -m parser.convertidor pruebas/ejemplos/validos/ejemplo.c
 
-# Analizador semántico: (P3 completa el comando cuando entregue el módulo)
+# Analizador semántico P3: nombres, redeclaraciones y ámbitos
+python -m semantico.semantico pruebas/ejemplos/validos/07_ambitos_y_bloques.c
+python -m semantico.semantico pruebas/ejemplos/invalidos/09_redeclaracion.c
+python -m semantico.semantico pruebas/ejemplos/invalidos/15_variable_fuera_de_su_ambito.c
 ```
 
 ## Casos de prueba
@@ -70,7 +73,7 @@ esperado (`// ESPERADO: ok`, `// ESPERADO: error lexico linea 4`). El índice co
 | Léxico y especificación de tokens | P1 | Listo |
 | Corpus de pruebas | P1 | Listo |
 | AST mínimo y convertidor de tokens a AST | P2 | Listo |
-| Semántico: tabla de símbolos y ámbitos | P3 | Pendiente |
+| Semántico: tabla de símbolos y ámbitos | P3 | Listo |
 | Semántico: reglas de tipos | P4 | Pendiente |
 | Ejecutor de pruebas y video | P5 | Pendiente |
 
