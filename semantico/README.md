@@ -5,7 +5,7 @@
 ## Alcance
 
 Implementa S1 (declaración previa), S2 (no redeclarar en el mismo ámbito) y S8
-(ámbitos por bloque). No implementa las reglas de tipos S3 a S7/S10 ni los avisos S9.
+(ámbitos por bloque). No implementa las reglas de tipos S3 a S7/S10. El aviso S9 está implementado.
 Un programa sin errores de P3 todavía puede contener errores de tipos.
 
 ## Entrada y salida
@@ -66,7 +66,7 @@ Una redeclaración devuelve `False` y conserva la primera declaración.
 y ambas ramas; en `Mientras` revisa una vez la condición y el cuerpo, sin ejecutar código.
 Cada `Bloque` abre/cierra un ámbito, también dentro de condicionales y ciclos.
 El nombre declarado es visible en su propio inicializador, como en C; detectar una lectura
-sin inicializar corresponde al aviso S9 y queda pendiente.
+sin inicializar produce un aviso S9.
 
 P4 puede usar directamente `tabla.buscar(nombre)` con su contrato acordado:
 
@@ -102,10 +102,14 @@ una guía; todavía no constituyen una integración ejecutable. Al recibirlo, P3
 conectar el recorrido y verificar junto con P4 los casos inválidos de tipos del corpus,
 la anotación de operadores y la ausencia de diagnósticos duplicados.
 
-S9 (aviso por lectura sin inicializar) aparece en la especificación, pero el reparto
-no le asigna responsable explícito. Debe acordarse entre P3 y P4 antes de dar por
-terminado el módulo completo. Actualmente `int x = x;` cumple la comprobación de
-visibilidad de P3, pero aún no produce el aviso de inicialización pendiente.
+S9 está implementado en P3. El estado de inicialización se identifica por ámbito
+ y nombre, sin cambiar el formato público de la tabla. Las asignaciones se analizan
+ después de leer sus operandos. Un if/else conserva solo las inicializaciones comunes
+ a ambas ramas; un if sin else y un while no garantizan ejecutar su cuerpo.
+ Los avisos empiezan con `Aviso:` y no hacen fallar el comando (salida 0).
+ Este análisis es conservador: no evalúa condiciones constantes ni propaga valores.
+ Una asignación sin errores de nombres cuenta como escritura, incluso si su expresión
+ produjo un aviso. Cuando se integre P4, también deberá comprobarse su validez de tipos.
 
 Las pruebas de P3 incluyen también tres niveles de sombreado, recuperación después
 de una redeclaración, errores dentro de inicializadores, visibilidad en condiciones

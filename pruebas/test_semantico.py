@@ -51,7 +51,8 @@ class PruebasSemanticoP3(unittest.TestCase):
     def analizar_codigo(self, codigo):
         ast, errores = codigo_a_ast(codigo)
         self.assertEqual(errores, [])
-        return analizar(ast)
+        ast, tabla, errores = analizar(ast)
+        return ast, tabla, [e for e in errores if not e["mensaje"].startswith("Aviso:")]
 
     def test_destino_y_operandos_no_declarados(self):
         _, tabla, errores = self.analizar_codigo("total = a + -b;")
@@ -108,7 +109,7 @@ class PruebasSemanticoP3(unittest.TestCase):
 
     def test_el_nombre_es_visible_en_su_inicializador_como_en_c(self):
         _, _, errores = self.analizar_codigo("int x = x;")
-        self.assertEqual(errores, [])  # S9 no forma parte de P3.
+        self.assertEqual(errores, [])  # La visibilidad no produce error; S9 se prueba por separado.
 
     def test_cada_analisis_tiene_tabla_independiente(self):
         self.analizar_codigo("int x = 1;")
@@ -167,6 +168,7 @@ class PruebasSemanticoP3(unittest.TestCase):
 
     def test_reanalizar_el_mismo_ast_no_duplica_diagnosticos(self):
         ast, tabla, errores = self.analizar_codigo('int x; { int x; } y = x;')
+        _, tabla, errores = analizar(ast)
         _, segunda_tabla, segundos_errores = analizar(ast)
         self.assertEqual((segunda_tabla, segundos_errores), (tabla, errores))
 

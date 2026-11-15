@@ -1,4 +1,4 @@
-"""Núcleo del analizador semántico de mini-C (P3): reglas S1, S2 y S8."""
+"""Núcleo del analizador semántico de mini-C (P3): reglas S1, S2, S8 y aviso S9."""
 import json
 import sys
 from pathlib import Path
@@ -14,6 +14,7 @@ class AnalizadorSemantico:
     def __init__(self):
         self.tabla = TablaSimbolos()
         self.errores = []
+        self.inicializadas = set()
 
     def _error(self, nodo: Nodo, mensaje: str) -> None:
         # El contrato del AST no conserva columnas: 1 es la referencia de línea.
@@ -27,10 +28,20 @@ class AnalizadorSemantico:
             self._error(nodo, f"Variable '{nombre}' no declarada antes de su uso")
         return simbolo
 
+    @staticmethod
+    def _clave(simbolo):
+        return simbolo["ambito"], simbolo["nombre"]
+
+    def _sin_errores_desde(self, inicio):
+        return not any(not e["mensaje"].startswith("Aviso:")
+                       for e in self.errores[inicio:])
+
     def _expresion(self, nodo: Nodo) -> None:
         """Resuelve nombres en todos los operandos; P4 completará los tipos."""
         if nodo.tipo == "Variable":
-            self._variable(nodo, nodo.valor)
+            simbolo = self._variable(nodo, nodo.valor)
+            if simbolo and self._clave(simbolo) not in self.inicializadas:
+                self._error(nodo, f"Aviso: Variable '{nodo.valor}' usada sin inicializar")
         elif nodo.tipo in ("OpBinario", "OpUnario"):
             nodo.tipo_dato = None
             for hijo in nodo.hijos:
@@ -54,20 +65,36 @@ class AnalizadorSemantico:
             nombre = nodo.valor["nombre"]
             tipo = nodo.valor["tipo_dato"]
             # Como en C, el nombre ya es visible en su propio inicializador.
-            if not self.tabla.declarar(nombre, tipo, nodo.linea):
+            declarada = self.tabla.declarar(nombre, tipo, nodo.linea)
+            if not declarada:
                 anterior = self.tabla.buscar(nombre)
                 self._error(nodo, f"Redeclaración de '{nombre}' en el mismo ámbito "
                             f"(declarada en línea {anterior['linea']})")
+            inicio = len(self.errores)
             for expresion in nodo.hijos:
                 self._expresion(expresion)
+            if declarada and nodo.hijos and self._sin_errores_desde(inicio):
+                self.inicializadas.add(self._clave(self.tabla.buscar(nombre)))
         elif nodo.tipo == "Asignacion":
-            self._variable(nodo, nodo.valor)
+            simbolo = self._variable(nodo, nodo.valor)
+            inicio = len(self.errores)
             self._expresion(nodo.hijos[0])
+            if simbolo and self._sin_errores_desde(inicio):
+                self.inicializadas.add(self._clave(simbolo))
         elif nodo.tipo in ("Si", "Mientras"):
             self._expresion(nodo.hijos[0])
-            # Ambas ramas se analizan; el ciclo se visita una sola vez.
+            # Solo lo inicializado en todos los caminos queda garantizado.
+            entrada = self.inicializadas.copy()
+            salidas = []
             for bloque in nodo.hijos[1:]:
+                self.inicializadas = entrada.copy()
                 self.recorrer(bloque)
+                salidas.append(self.inicializadas.copy())
+            if nodo.tipo == "Si" and len(salidas) == 2:
+                self.inicializadas = salidas[0] & salidas[1]
+            else:
+                # Un if sin else o un while puede no ejecutar su cuerpo.
+                self.inicializadas = entrada
         elif nodo.tipo == "Printf":
             for expresion in nodo.hijos:
                 self._expresion(expresion)
@@ -76,7 +103,7 @@ class AnalizadorSemantico:
 
 
 def analizar(ast: Nodo) -> Tuple[Nodo, List[dict], List[dict]]:
-    """Devuelve (AST, declaraciones, errores) de S1/S2/S8; tipos pendientes de P4."""
+    """Devuelve (AST, declaraciones, errores y avisos) de S1/S2/S8/S9; tipos pendientes de P4."""
     analizador = AnalizadorSemantico()
     analizador.recorrer(ast)
     return ast, analizador.tabla.a_lista(), analizador.errores
@@ -98,14 +125,15 @@ def main(argv: List[str]) -> int:
     except (OSError, UnicodeError, json.JSONDecodeError) as error:
         print(f"ERROR de entrada: {error}", file=sys.stderr)
         return 2
-    print("Alcance P3: S1, S2 y S8. Reglas de tipos y avisos pendientes de integración.")
+    print("Alcance P3: S1, S2, S8 y aviso S9. Reglas de tipos pendientes de P4.")
     if ast is not None:
         _, tabla, errores = analizar(ast)
         print(json.dumps(tabla, ensure_ascii=False, indent=2))
     for error in errores:
-        print(f"ERROR {error['fase']} línea {error['linea']}, col {error['columna']}: "
+        etiqueta = "AVISO" if error["mensaje"].startswith("Aviso:") else "ERROR"
+        print(f"{etiqueta} {error['fase']} línea {error['linea']}, col {error['columna']}: "
               f"{error['mensaje']}")
-    return 1 if errores else 0
+    return 1 if any(not e["mensaje"].startswith("Aviso:") for e in errores) else 0
 
 
 if __name__ == "__main__":
