@@ -1,20 +1,21 @@
-# Analizador semántico: núcleo de P3
+# Analizador semántico: P3 y P4
 
-**Responsable:** Fabio Mijango. **Estado:** núcleo P3 implementado y probado; integración conjunta P3/P4 pendiente.
+**Responsables:** Fabio Mijango (P3) y Gabriela Sofia Quinteros Ramirez (P4).
+**Estado:** reglas S1 a S10 implementadas y probadas.
 
 ## Alcance
 
-Implementa S1 (declaración previa), S2 (no redeclarar en el mismo ámbito) y S8
-(ámbitos por bloque). No implementa las reglas de tipos S3 a S7/S10. El aviso S9 está implementado.
-Un programa sin errores de P3 todavía puede contener errores de tipos.
+Implementa S1 (declaración previa), S2 (no redeclarar en el mismo ámbito), S3 a S7
+(compatibilidad y operaciones de tipos), S8 (ámbitos por bloque), S9 (aviso de uso sin
+inicializar) y S10 (uso de cadenas en `printf`).
 
 ## Entrada y salida
 
 `analizar(ast)` recibe un `Nodo` del convertidor de P2 o de `Nodo.desde_json(texto)`
 y devuelve `(ast, tabla_simbolos, errores)` según `docs/contratos.md`.
 
-- Anota las referencias `Variable` con el tipo de la declaración visible. Los literales
-  conservan el tipo que trae el AST. Los operadores quedan con `tipo_dato=None` hasta P4.
+- Anota las referencias `Variable`, los literales y los operadores con su `tipo_dato`.
+  Las expresiones inválidas quedan con `tipo_dato=None`.
 - La tabla es una lista de `{nombre, tipo, ambito, linea}` en orden de declaración;
   incluye los símbolos de bloques cerrados para poder mostrarlos en la demo.
 - Los errores tienen `{fase, linea, columna, mensaje}`. La línea viene del AST;
@@ -60,7 +61,7 @@ los bloques reciben identificadores crecientes y únicos, incluidos los bloques 
 Cerrar el global provoca `ValueError`. Las consultas devuelven copias para proteger la tabla.
 Una redeclaración devuelve `False` y conserva la primera declaración.
 
-## Recorrido e integración con P4
+## Reglas de tipos de P4
 
 `AnalizadorSemantico.recorrer` visita las sentencias en orden. En `Si` revisa la condición
 y ambas ramas; en `Mientras` revisa una vez la condición y el cuerpo, sin ejecutar código.
@@ -68,24 +69,22 @@ Cada `Bloque` abre/cierra un ámbito, también dentro de condicionales y ciclos.
 El nombre declarado es visible en su propio inicializador, como en C; detectar una lectura
 sin inicializar produce un aviso S9.
 
-P4 puede usar directamente `tabla.buscar(nombre)` con su contrato acordado:
+`semantico/tipos.py` implementa el contrato acordado:
 
 ```python
 tipo_expresion(nodo, tabla, errores)  # tipo o None
 asignable(tipo_destino, tipo_valor)   # bool
 ```
 
-Puntos de conexión en `semantico.py` al integrar `semantico/tipos.py`:
+La integración conserva una sola fuente para los errores de nombres: P3 resuelve las
+variables primero y P4 no repite el diagnóstico S1. Si una subexpresión ya es inválida,
+P4 devuelve `None` y no encadena errores en la expresión contenedora.
 
-1. `_expresion` resuelve S1 y los tipos de las variables; se debe coordinar con
-   `tipo_expresion` para que un nombre no declarado produzca un solo diagnóstico.
-2. `Declaracion` y `Asignacion`: verificar S3 solo cuando la expresión tenga tipo válido.
-3. `Si`/`Mientras`: verificar S5 después de analizar su condición.
-4. `Printf`: verificar S10 y analizar todos los argumentos.
-
-No se cambió el contrato ni se agregó una dependencia a un módulo de P4 que aún no existe.
-La suite de P3 cubre la interfaz pública, sombreado, bloques hermanos, aislamiento entre
-ramas, destinos y operandos no declarados, AST manual/automático y el corpus válido.
+- S3 permite únicamente `char -> int -> float` y rechaza cualquier estrechamiento.
+- S4 permite aritmética numérica; `%` solo admite `int` y `char`.
+- S5, S6 y S7 requieren operandos numéricos en condiciones, lógicos y comparaciones.
+- S10 exige que el primer argumento de `printf` sea una cadena literal y prohíbe las
+  cadenas en los demás contextos.
 
 ## Guion breve para explicar P3
 
@@ -94,22 +93,14 @@ caso válido de ámbitos, después `09_redeclaracion.c` y `15_variable_fuera_de_
 Señalar la línea y causa de cada error. La tabla aporta la memoria de nombres y bloques que
 la gramática no mantiene. Cerrar aclarando que P4 añade la compatibilidad de tipos.
 
-## Pendientes para cerrar el semántico de la Fase 1
-
-El núcleo de P3 está listo, pero el hito de integración que el plan asigna a P3
-requiere recibir `semantico/tipos.py` de P4. Los puntos de conexión anteriores son
-una guía; todavía no constituyen una integración ejecutable. Al recibirlo, P3 debe
-conectar el recorrido y verificar junto con P4 los casos inválidos de tipos del corpus,
-la anotación de operadores y la ausencia de diagnósticos duplicados.
-
 S9 está implementado en P3. El estado de inicialización se identifica por ámbito
  y nombre, sin cambiar el formato público de la tabla. Las asignaciones se analizan
  después de leer sus operandos. Un if/else conserva solo las inicializaciones comunes
  a ambas ramas; un if sin else y un while no garantizan ejecutar su cuerpo.
  Los avisos empiezan con `Aviso:` y no hacen fallar el comando (salida 0).
  Este análisis es conservador: no evalúa condiciones constantes ni propaga valores.
- Una asignación sin errores de nombres cuenta como escritura, incluso si su expresión
- produjo un aviso. Cuando se integre P4, también deberá comprobarse su validez de tipos.
+Una asignación solo cuenta como escritura si no tiene errores de nombres ni de tipos;
+los avisos no la invalidan.
 
 Las pruebas de P3 incluyen también tres niveles de sombreado, recuperación después
 de una redeclaración, errores dentro de inicializadores, visibilidad en condiciones

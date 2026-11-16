@@ -1,4 +1,4 @@
-"""Núcleo del analizador semántico de mini-C (P3): reglas S1, S2, S8 y aviso S9."""
+"""Analizador semántico de mini-C: reglas S1 a S10."""
 import json
 import sys
 from pathlib import Path
@@ -6,6 +6,7 @@ from typing import List, Tuple
 
 from parser.nodo import Nodo
 from semantico.tabla_simbolos import TablaSimbolos
+from semantico.tipos import asignable, es_numerico, tipo_expresion
 
 
 class AnalizadorSemantico:
@@ -36,18 +37,22 @@ class AnalizadorSemantico:
         return not any(not e["mensaje"].startswith("Aviso:")
                        for e in self.errores[inicio:])
 
-    def _expresion(self, nodo: Nodo) -> None:
-        """Resuelve nombres en todos los operandos; P4 completará los tipos."""
+    def _resolver_expresion(self, nodo: Nodo) -> None:
+        """Resuelve los nombres antes de que P4 calcule los tipos."""
         if nodo.tipo == "Variable":
             simbolo = self._variable(nodo, nodo.valor)
             if simbolo and self._clave(simbolo) not in self.inicializadas:
                 self._error(nodo, f"Aviso: Variable '{nodo.valor}' usada sin inicializar")
         elif nodo.tipo in ("OpBinario", "OpUnario"):
-            nodo.tipo_dato = None
             for hijo in nodo.hijos:
-                self._expresion(hijo)
+                self._resolver_expresion(hijo)
         elif nodo.tipo != "Literal":
             raise ValueError(f"Expresión no soportada: {nodo.tipo}")
+
+    def _expresion(self, nodo: Nodo):
+        """Resuelve nombres y devuelve el tipo calculado por las reglas de P4."""
+        self._resolver_expresion(nodo)
+        return tipo_expresion(nodo, self.tabla, self.errores)
 
     def recorrer(self, nodo: Nodo) -> None:
         """Comprueba declaraciones, destinos de asignación y usos en cada sentencia."""
@@ -72,17 +77,24 @@ class AnalizadorSemantico:
                             f"(declarada en línea {anterior['linea']})")
             inicio = len(self.errores)
             for expresion in nodo.hijos:
-                self._expresion(expresion)
+                tipo_valor = self._expresion(expresion)
+                if tipo_valor is not None and not asignable(tipo, tipo_valor):
+                    self._error(nodo, f"No se puede asignar un {tipo_valor} a una variable {tipo}")
             if declarada and nodo.hijos and self._sin_errores_desde(inicio):
                 self.inicializadas.add(self._clave(self.tabla.buscar(nombre)))
         elif nodo.tipo == "Asignacion":
             simbolo = self._variable(nodo, nodo.valor)
             inicio = len(self.errores)
-            self._expresion(nodo.hijos[0])
+            tipo_valor = self._expresion(nodo.hijos[0])
+            if simbolo and tipo_valor is not None and not asignable(simbolo["tipo"], tipo_valor):
+                self._error(nodo, f"No se puede asignar un {tipo_valor} a una variable {simbolo['tipo']}")
             if simbolo and self._sin_errores_desde(inicio):
                 self.inicializadas.add(self._clave(simbolo))
         elif nodo.tipo in ("Si", "Mientras"):
-            self._expresion(nodo.hijos[0])
+            tipo_condicion = self._expresion(nodo.hijos[0])
+            if tipo_condicion is not None and not es_numerico(tipo_condicion):
+                sentencia = "if" if nodo.tipo == "Si" else "while"
+                self._error(nodo, f"La condición de {sentencia} debe ser numérica, no {tipo_condicion}")
             # Solo lo inicializado en todos los caminos queda garantizado.
             entrada = self.inicializadas.copy()
             salidas = []
@@ -96,14 +108,24 @@ class AnalizadorSemantico:
                 # Un if sin else o un while puede no ejecutar su cuerpo.
                 self.inicializadas = entrada
         elif nodo.tipo == "Printf":
-            for expresion in nodo.hijos:
-                self._expresion(expresion)
+            if not nodo.hijos:
+                self._error(nodo, "printf requiere una cadena literal como primer argumento")
+                return
+            primer_argumento = nodo.hijos[0]
+            tipo_primero = self._expresion(primer_argumento)
+            if (tipo_primero is not None and
+                    (primer_argumento.tipo != "Literal" or tipo_primero != "cadena")):
+                self._error(nodo, "El primer argumento de printf debe ser una cadena literal")
+            for expresion in nodo.hijos[1:]:
+                tipo_argumento = self._expresion(expresion)
+                if tipo_argumento == "cadena":
+                    self._error(expresion, "Una cadena solo se permite como primer argumento de printf")
         else:
             raise ValueError(f"Sentencia no soportada: {nodo.tipo}")
 
 
 def analizar(ast: Nodo) -> Tuple[Nodo, List[dict], List[dict]]:
-    """Devuelve (AST, declaraciones, errores y avisos) de S1/S2/S8/S9; tipos pendientes de P4."""
+    """Devuelve (AST, declaraciones, errores y avisos) de las reglas S1 a S10."""
     analizador = AnalizadorSemantico()
     analizador.recorrer(ast)
     return ast, analizador.tabla.a_lista(), analizador.errores
@@ -125,7 +147,7 @@ def main(argv: List[str]) -> int:
     except (OSError, UnicodeError, json.JSONDecodeError) as error:
         print(f"ERROR de entrada: {error}", file=sys.stderr)
         return 2
-    print("Alcance P3: S1, S2, S8 y aviso S9. Reglas de tipos pendientes de P4.")
+    print("Analizador semántico: reglas S1 a S10.")
     if ast is not None:
         _, tabla, errores = analizar(ast)
         print(json.dumps(tabla, ensure_ascii=False, indent=2))
