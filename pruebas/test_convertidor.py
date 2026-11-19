@@ -1,4 +1,4 @@
-"""Pruebas del convertidor de tokens a AST (P2)."""
+"""Pruebas del convertidor de tokens a AST."""
 import json
 import unittest
 from pathlib import Path

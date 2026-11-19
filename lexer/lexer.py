@@ -183,7 +183,7 @@ def escribir_errores(errores: List[dict], ruta: str = "errores.txt") -> None:
 
 
 def tokens_a_json(tokens: List[Token], ruta: str) -> None:
-    """Cada token se guarda como [tipo, lexema, linea, columna] (el contrato con el resto del equipo)."""
+    """Cada token se guarda como [tipo, lexema, linea, columna] según el contrato de tokens."""
     lineas = [json.dumps(list(t), ensure_ascii=False) for t in tokens]
     with open(ruta, "w", encoding="utf-8") as f:
         f.write("[\n " + ",\n ".join(lineas) + "\n]\n")

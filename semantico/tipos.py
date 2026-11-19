@@ -25,7 +25,7 @@ def _error(nodo: Nodo, errores: List[dict], mensaje: str) -> None:
 
 
 def _tipo_variable(nodo: Nodo, tabla) -> Optional[str]:
-    """Obtiene el tipo visible sin repetir el diagnóstico S1 de P3."""
+    """Obtiene el tipo visible sin repetir el diagnóstico S1."""
     if nodo.tipo_dato is not None:
         return nodo.tipo_dato
     simbolo = tabla.buscar(nodo.valor)

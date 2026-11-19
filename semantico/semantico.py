@@ -38,7 +38,7 @@ class AnalizadorSemantico:
                        for e in self.errores[inicio:])
 
     def _resolver_expresion(self, nodo: Nodo) -> None:
-        """Resuelve los nombres antes de que P4 calcule los tipos."""
+        """Resuelve los nombres antes de calcular los tipos."""
         if nodo.tipo == "Variable":
             simbolo = self._variable(nodo, nodo.valor)
             if simbolo and self._clave(simbolo) not in self.inicializadas:
@@ -50,7 +50,7 @@ class AnalizadorSemantico:
             raise ValueError(f"Expresión no soportada: {nodo.tipo}")
 
     def _expresion(self, nodo: Nodo):
-        """Resuelve nombres y devuelve el tipo calculado por las reglas de P4."""
+        """Resuelve nombres y devuelve el tipo calculado por las reglas de tipos."""
         self._resolver_expresion(nodo)
         return tipo_expresion(nodo, self.tabla, self.errores)
 

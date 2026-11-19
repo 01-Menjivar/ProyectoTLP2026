@@ -1,4 +1,4 @@
-"""Pruebas de P3: tabla de símbolos y reglas S1, S2, S8."""
+"""Pruebas del analizador semántico: tabla de símbolos y reglas S1, S2, S8."""
 import unittest
 from pathlib import Path
 
@@ -47,7 +47,7 @@ class PruebasTablaSimbolos(unittest.TestCase):
         self.assertEqual(tabla.buscar("x")["tipo"], "int")
 
 
-class PruebasSemanticoP3(unittest.TestCase):
+class PruebasSemantico(unittest.TestCase):
     def analizar_codigo(self, codigo):
         ast, errores = codigo_a_ast(codigo)
         self.assertEqual(errores, [])
@@ -132,7 +132,7 @@ class PruebasSemanticoP3(unittest.TestCase):
                 self.assertEqual((tabla_manual, errores_manual), (tabla, errores))
                 self.assertEqual(manual.a_dict(), automatico.a_dict())
 
-    def test_corpus_valido_no_tiene_errores_de_p3(self):
+    def test_corpus_valido_sin_errores_de_nombres(self):
         for ruta in (Path(__file__).parent / "ejemplos" / "validos").glob("*.c"):
             with self.subTest(programa=ruta.name):
                 _, _, errores = self.analizar_codigo(ruta.read_text(encoding="utf-8"))

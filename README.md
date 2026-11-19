@@ -9,13 +9,11 @@ int n = "hola";              ->   ERROR semantico línea 3, col 1: No se puede a
 
 ## Integrantes
 
-| Nombre | Área |
-|---|---|
-| Juan Carlos Sibrian | Analizador léxico, especificación de tokens y corpus de pruebas |
-| Kattia Sarai Santan Soriano | Representación AST y convertidor de tokens a AST |
-| Fabio Mijango | Analizador semántico, tabla de símbolos y manejo de ámbitos |
-| Gabriela Sofia Quinteros Ramirez | Reglas de tipos y casos de prueba semánticos |
-| Oscar Ernesto Menjivar Ayala | Ejecutor de pruebas e integración |
+- Fabio Mijango
+- Gabriela Sofia Quinteros Ramirez
+- Juan Carlos Sibrian
+- Kattia Sarai Santan Soriano
+- Oscar Ernesto Menjivar Ayala
 
 ## El lenguaje
 
@@ -30,7 +28,7 @@ ProyectoTLP2026/
 ├── lexer/          analizador léxico (lexer.py) y ejemplo de salida JSON
 ├── parser/         representación AST (nodo.py) y convertidor de tokens a AST (convertidor.py)
 ├── semantico/      analizador semántico (semantico.py), tabla de símbolos y reglas de tipos
-├── pruebas/        ejecutor del corpus (ejecutor.py), pruebas unitarias y programas .c de ejemplo
+├── pruebas/        ejecutor del corpus (ejecutor.py), pruebas unitarias y programas .c / AST de ejemplo
 ├── docs/           especificación formal de tokens, definición de mini-C y contratos
 ├── CONTRIBUTING.md guía de estilo y flujo de trabajo en Git
 └── README.md
@@ -38,34 +36,86 @@ ProyectoTLP2026/
 
 ## Cómo ejecutar
 
-Requisitos: **Python 3.10** o superior (sin dependencias externas). Todos los comandos se ejecutan desde la raíz del repositorio.
+Requisitos: **Python 3.10** o superior (sin dependencias externas). Todos los comandos se ejecutan desde la raíz del repositorio (use `python3` en macOS/Linux si `python` no apunta a Python 3).
+
+### 1. Analizador léxico
+
+Recorre un programa `.c` una sola vez, imprime los tokens reconocidos (`tipo`, `lexema`, `linea`, `columna`) junto con los errores léxicos detectados y guarda la salida en `salida/tokens.txt` y `salida/errores.txt`. No se detiene ante el primer error.
 
 ```sh
-# 1. Analizador léxico: imprime los tokens y errores léxicos, y genera salida/tokens.txt y salida/errores.txt
+# Entrada válida
 python -m lexer.lexer pruebas/ejemplos/validos/ejemplo.c
 
-# 2. Convertidor de tokens a AST: imprime el árbol sintáctico en formato JSON
-python -m parser.convertidor pruebas/ejemplos/validos/ejemplo.c
+# Entrada con múltiples errores léxicos
+python -m lexer.lexer pruebas/ejemplos/invalidos/07_varios_errores_lexicos.c
 
-# 3. Analizador semántico: recibe un .c o un AST en JSON; verifica ámbitos, declaraciones y tipos
+# Exportar los tokens a JSON
+python -m lexer.lexer pruebas/ejemplos/validos/ejemplo.c --json salida/tokens.json
+```
+
+### 2. Convertidor de tokens a AST
+
+Convierte el código fuente `.c` en un árbol sintáctico mínimo (`Nodo`) en formato JSON para alimentar al analizador semántico.
+
+```sh
+python -m parser.convertidor pruebas/ejemplos/validos/ejemplo.c
+```
+
+### 3. Analizador semántico
+
+Recibe un archivo `.c` o un AST en formato `.json`, construye la tabla de símbolos con manejo de ámbitos y verifica las reglas semánticas **S1 a S10** (declaración previa, redeclaración, compatibilidad y promoción de tipos, condiciones y operadores numéricos, ámbitos por bloque, avisos de variables sin inicializar y uso de cadenas en `printf`).
+
+```sh
+# Programas válidos (ámbitos, promociones de tipos y aviso S9 sin inicializar)
 python -m semantico.semantico pruebas/ejemplos/validos/07_ambitos_y_bloques.c
+python -m semantico.semantico pruebas/ejemplos/validos/08_char_y_promociones.c
+python -m semantico.semantico pruebas/ejemplos/validos/10_aviso_sin_inicializar.c
+
+# Programas con errores semánticos (ámbitos y tipos)
 python -m semantico.semantico pruebas/ejemplos/invalidos/09_redeclaracion.c
 python -m semantico.semantico pruebas/ejemplos/invalidos/15_variable_fuera_de_su_ambito.c
 python -m semantico.semantico pruebas/ejemplos/invalidos/10_cadena_en_entero.c
 python -m semantico.semantico pruebas/ejemplos/invalidos/11_float_en_int.c
 python -m semantico.semantico pruebas/ejemplos/invalidos/16_modulo_con_float.c
+
+# Ejecución directa sobre un AST en JSON
 python -m semantico.semantico pruebas/ejemplos/ast/08_variable_no_declarada.json
-
-# 4. Ejecutor del corpus: corre los 29 programas .c de extremo a extremo y valida // ESPERADO
-python -m pruebas.ejecutor
-
-# 5. Suite completa de pruebas unitarias
-python -m unittest discover pruebas
 ```
 
-## Casos de prueba
+### 4. Casos de prueba
 
-El corpus de pruebas se encuentra en `pruebas/ejemplos/` y consta de 11 programas **válidos** (`validos/`) y 18 **inválidos** (`invalidos/`) con errores léxicos o semánticos que indican línea y causa, además de AST de referencia en `pruebas/ejemplos/ast/`. La primera línea de cada archivo `.c` declara el resultado esperado (`// ESPERADO: ok`, `// ESPERADO: error lexico linea N` o `// ESPERADO: error semantico linea N`). El índice completo se consulta en [pruebas/ejemplos/INDICE.md](pruebas/ejemplos/INDICE.md).
+#### Ejecutor general del corpus
+
+Recorre los **29 programas `.c`** de `pruebas/ejemplos/` ejecutando el flujo completo (`lexer` → `convertidor` → `semantico`) y verifica que la fase, la línea y la causa reportadas coincidan con el encabezado `// ESPERADO: ...` de cada archivo.
+
+```sh
+python -m pruebas.ejecutor
+```
+
+#### Pruebas unitarias
+
+Ejecuta la suite completa de pruebas unitarias (léxico, AST, convertidor, tabla de símbolos, ámbitos, avisos S9, reglas de tipos y ejecutor del corpus):
+
+```sh
+# Suite completa
+python -m unittest discover pruebas
+
+# Por módulo
+python -m unittest pruebas.test_lexer
+python -m unittest pruebas.test_ast pruebas.test_convertidor
+python -m unittest pruebas.test_semantico pruebas.test_semantico_s9 pruebas.test_tipos
+python -m unittest pruebas.test_ejecutor
+```
+
+## Corpus de pruebas
+
+El corpus se ubica en `pruebas/ejemplos/` y consta de:
+
+- **11 programas válidos** (`pruebas/ejemplos/validos/`): tipos, aritmética y precedencia, comparaciones, operadores lógicos, condicionales, ciclos, ámbitos anidados, promociones de tipos, comentarios y aviso por variable sin inicializar.
+- **18 programas inválidos** (`pruebas/ejemplos/invalidos/`): 7 casos con errores léxicos y 11 casos con errores semánticos que reportan fase, línea y causa.
+- **9 AST de referencia** (`pruebas/ejemplos/ast/`): árboles sintácticos en JSON para probar el analizador semántico directamente.
+
+La primera línea de cada archivo `.c` declara el resultado esperado (`// ESPERADO: ok`, `// ESPERADO: error lexico linea N` o `// ESPERADO: error semantico linea N`). El índice completo se consulta en [pruebas/ejemplos/INDICE.md](pruebas/ejemplos/INDICE.md).
 
 ## Reflexión: qué verificaciones no puede expresar una CFG
 
@@ -88,3 +138,4 @@ Esa frontera es la que se retoma en la Fase 2: en el español, la concordancia d
 - [Especificación formal de tokens](docs/tokens.md): expresiones regulares, autómata numérico y errores léxicos.
 - [El lenguaje mini-C](docs/lenguaje_c.md): alcance del lenguaje y reglas semánticas S1 a S10.
 - [Contratos entre módulos](docs/contratos.md): formatos de token, error, AST, tabla de símbolos y funciones públicas.
+- [Índice del corpus de pruebas](pruebas/ejemplos/INDICE.md): detalle de los 29 programas de prueba.

@@ -1,4 +1,4 @@
-"""Ejecutor general del corpus de pruebas de mini-C (P5).
+"""Ejecutor general del corpus de pruebas de mini-C.
 
 Recorre los programas `.c` del corpus, ejecuta el flujo completo
 (lexer -> convertidor a AST -> analizador semántico) y comprueba que cada caso

@@ -1,4 +1,4 @@
-"""Pruebas del ejecutor general del corpus (P5)."""
+"""Pruebas del ejecutor general del corpus."""
 import io
 import unittest
 from pathlib import Path
