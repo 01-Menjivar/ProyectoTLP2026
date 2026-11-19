@@ -1,4 +1,4 @@
-"""Convertidor de tokens a AST (P2).
+"""Convertidor de tokens a AST.
 
 Toma la lista de tokens del lexer y construye el árbol (`Nodo`) que consume el semántico,
 con el formato de docs/contratos.md, sección 3. Es un descenso recursivo sobre mini-C; no es

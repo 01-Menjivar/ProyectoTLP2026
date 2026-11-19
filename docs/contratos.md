@@ -1,9 +1,8 @@
 # Contratos entre módulos (Fase 1)
 
-Se congelan lo antes posible. Un cambio posterior se avisa a todo el grupo antes de hacerlo.
-Las secciones marcadas **(propuesta)** las confirma o ajusta su responsable (la 3 ya fue confirmada por P2).
+Este documento define las estructuras de datos e interfaces públicas compartidas entre los módulos del proyecto.
 
-## 1. Token (P1)
+## 1. Token
 
 Tupla con nombre `Token(tipo, lexema, linea, columna)`. Línea y columna empiezan en 1.
 La lista de tokens **siempre termina con un token `EOF`**. Los literales `CARACTER` y `CADENA` conservan las comillas.
@@ -22,7 +21,7 @@ La especificación formal (expresiones regulares) está en `docs/tokens.md`.
 
 En JSON cada token es `[tipo, lexema, linea, columna]`. Ejemplo: `lexer/tokens_ejemplo.json`.
 
-## 2. Error (todos)
+## 2. Error
 
 ```python
 {"fase": "lexico" | "sintactico" | "semantico", "linea": 3, "columna": 14, "mensaje": "..."}
@@ -31,9 +30,9 @@ En JSON cada token es `[tipo, lexema, linea, columna]`. Ejemplo: `lexer/tokens_e
 `sintactico` lo produce `parser/convertidor.py` cuando la forma del programa no cumple la gramática.
 El mensaje indica **la causa**. Los avisos (S9) usan `"fase": "semantico"` y un mensaje que empieza con `Aviso:`.
 
-## 3. Representación para el semántico: AST mínimo (P2)
+## 3. Representación para el semántico: AST mínimo
 
-El PDF permite que el semántico trabaje sobre "un AST mínimo construido a mano". Clase `Nodo` en
+El analizador semántico trabaja sobre un AST mínimo representado por la clase `Nodo` en
 `parser/nodo.py`: `Nodo(tipo, hijos, valor, linea, tipo_dato=None)`. El semántico llena `tipo_dato`
 (`int`, `float`, `char` o `cadena`) en cada expresión; los literales ya lo traen puesto.
 
@@ -55,7 +54,7 @@ El tipo de un `Literal` sale del token: `ENTERO` es `int`, `FLOTANTE` es `float`
 
 Los AST de ejemplo, hechos a mano, están en `pruebas/ejemplos/ast/` como JSON con las claves de `Nodo.a_dict()` (`tipo`, `valor`, `linea`, `tipo_dato`, `hijos`). Se cargan con `Nodo.desde_json(texto)` y se escriben con `nodo.a_json()`. Todo cuerpo de `Si` y `Mientras` es un `Bloque`, y `linea` cuenta desde la línea 1 del `.c`.
 
-## 4. Tabla de símbolos (P3) y reglas de tipos (P4)
+## 4. Tabla de símbolos y reglas de tipos
 
 ```python
 # Tabla de símbolos
@@ -73,14 +72,14 @@ Un error de tipo no se encadena: si una subexpresión ya dio error, `tipo_expres
 ## 5. Funciones de cada módulo
 
 ```python
-# parser/convertidor.py     (P2)
+# parser/convertidor.py
 def codigo_a_ast(codigo: str) -> Tuple[Optional[Nodo], List[dict]]   # (AST o None, errores léxicos/sintácticos)
 def tokens_a_ast(tokens: List[Token]) -> Tuple[Optional[Nodo], List[dict]]
 
-# lexer/lexer.py            (P1)
+# lexer/lexer.py
 def analizar(codigo: str) -> Tuple[List[Token], List[dict]]
 
-# semantico/semantico.py    (P3)
+# semantico/semantico.py
 def analizar(ast: Nodo) -> Tuple[Nodo, List[dict], List[dict]]
 #            ^ AST anotado, tabla de símbolos (lista de dicts), errores y avisos
 ```

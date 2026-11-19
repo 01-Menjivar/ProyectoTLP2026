@@ -1,4 +1,4 @@
-"""Pruebas de P4: compatibilidad, expresiones y reglas S3 a S7/S10."""
+"""Pruebas de compatibilidad, expresiones y reglas S3 a S7/S10."""
 import unittest
 import re
 from pathlib import Path
@@ -10,7 +10,7 @@ from semantico.tipos import asignable, tipo_expresion
 
 
 class TablaSimulada:
-    """Tabla mínima para probar el contrato de tipos sin el recorrido de P3."""
+    """Tabla mínima para probar el contrato de tipos de forma aislada."""
 
     def __init__(self, simbolos=None):
         self.simbolos = simbolos or {}

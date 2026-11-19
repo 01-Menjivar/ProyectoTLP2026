@@ -1,7 +1,6 @@
 # El subconjunto de C (mini-C)
 
-El PDF del proyecto permite elegir "C, C++, C#, Java, un lenguaje aritmético con estructuras de control,
-u otro". Elegimos **un subconjunto de C**, que está en la lista, así que no necesita aprobación aparte.
+Para la Fase 1 se eligió **un subconjunto de C (mini-C)** como lenguaje de entrada del analizador léxico y semántico.
 
 ## Qué incluye
 
@@ -23,7 +22,7 @@ u otro". Elegimos **un subconjunto de C**, que está en la lista, así que no ne
 
 Funciones propias (y por eso `main`), arreglos, punteros, `for`, `return`, `struct`, el preprocesador
 (`#include`), constantes numéricas en hexadecimal o con exponente, y la secuencia `else if` sin llaves.
-Un programa es una **secuencia de sentencias** (sin `main`), igual que en el equipo de la otra sección.
+Un programa es una **secuencia de sentencias** (sin `main`).
 Los programas llevan extensión `.c`, pero no se compilan con `gcc`.
 
 ## Reglas semánticas (las revisa el analizador semántico)

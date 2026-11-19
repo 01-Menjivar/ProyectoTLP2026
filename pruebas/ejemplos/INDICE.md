@@ -2,7 +2,7 @@
 
 Cada programa lleva en su **primera línea** el resultado esperado (`// ESPERADO: ...`).
 Un programa inválido tiene **un solo error** (salvo `07_varios_errores_lexicos`). La línea indicada cuenta desde la
-línea 1 del archivo, incluidos los comentarios del encabezado. Según el PDF, las entradas inválidas deben producir
+línea 1 del archivo, incluidos los comentarios del encabezado. Las entradas inválidas deben producir
 **errores léxicos o semánticos** claros, con línea y causa.
 
 ## Válidos (`validos/`)

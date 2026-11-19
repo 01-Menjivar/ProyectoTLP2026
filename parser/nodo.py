@@ -1,4 +1,4 @@
-"""Nodo del árbol de sintaxis (AST). Contrato en docs/contratos.md, sección 3 (P2)."""
+"""Nodo del árbol de sintaxis (AST). Contrato en docs/contratos.md, sección 3."""
 import json
 from dataclasses import dataclass, field
 from typing import Any, List, Optional

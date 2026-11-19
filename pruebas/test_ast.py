@@ -1,4 +1,4 @@
-"""Pruebas del AST de ejemplo (P2): cada JSON cumple el contrato y coincide con su programa .c."""
+"""Pruebas del AST de ejemplo: cada JSON cumple el contrato y coincide con su programa .c."""
 import json
 import unittest
 from pathlib import Path

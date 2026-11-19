@@ -1,4 +1,4 @@
-"""Avisos S9 de P3 y flujo de inicialización."""
+"""Pruebas de avisos S9 y flujo de inicialización."""
 import unittest
 from parser.convertidor import codigo_a_ast
 from semantico.semantico import analizar

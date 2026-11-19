@@ -1,4 +1,4 @@
-"""Tabla de símbolos de mini-C: una pila de ámbitos y su historial (P3)."""
+"""Tabla de símbolos de mini-C: una pila de ámbitos y su historial."""
 from typing import List, Optional
 
 
