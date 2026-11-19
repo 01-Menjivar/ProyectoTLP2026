@@ -67,7 +67,7 @@ ProyectoTLP2026/
 ├── parser/         representación AST (nodo.py) y convertidor de tokens a AST (convertidor.py)
 ├── semantico/      analizador semántico (semantico.py), tabla de símbolos y reglas de tipos
 ├── pruebas/        ejecutor del corpus (ejecutor.py), pruebas unitarias y programas .c / AST de ejemplo
-├── docs/           especificación formal de tokens, definición de mini-C y contratos
+├── docs/           especificación formal de tokens, definición de mini-C, contratos y capturas (img/)
 ├── CONTRIBUTING.md guía de estilo y flujo de trabajo en Git
 └── README.md
 ```
@@ -92,32 +92,7 @@ python -m lexer.lexer pruebas/ejemplos/invalidos/07_varios_errores_lexicos.c
 python -m lexer.lexer pruebas/ejemplos/validos/ejemplo.c --json salida/tokens.json
 ```
 
-<details>
-<summary>Ver ejemplo de salida del analizador léxico (múltiples errores)</summary>
-
-```text
-3:1      TIPO           int
-3:5      ID             a
-3:7      IGUAL          =
-3:9      ENTERO         1
-3:13     ENTERO         2
-3:14     PUNTOYCOMA     ;
-4:1      TIPO           float
-4:7      ID             b
-4:9      IGUAL          =
-4:13     PUNTOYCOMA     ;
-5:1      TIPO           char
-5:6      ID             c
-5:8      IGUAL          =
-6:1      EOF            
-ERROR línea 3, col 11: Carácter inválido '#'
-ERROR línea 4, col 11: Número mal formado '3.'
-ERROR línea 5, col 10: Literal de carácter mal formado 'x;: debe contener exactamente un carácter
-
-14 tokens, 3 errores léxicos
-```
-
-</details>
+![Ejecución del analizador léxico con múltiples errores](docs/img/demo_lexer.png)
 
 ### 2. Convertidor de tokens a AST
 
@@ -148,49 +123,7 @@ python -m semantico.semantico pruebas/ejemplos/invalidos/16_modulo_con_float.c
 python -m semantico.semantico pruebas/ejemplos/ast/08_variable_no_declarada.json
 ```
 
-<details>
-<summary>Ver ejemplos de salida del analizador semántico (válido con ámbitos vs. error de tipos)</summary>
-
-**Ámbitos válidos (`07_ambitos_y_bloques.c`):**
-```text
-Analizador semántico: reglas S1 a S10.
-[
-  {
-    "nombre": "x",
-    "tipo": "int",
-    "ambito": 0,
-    "linea": 3
-  },
-  {
-    "nombre": "x",
-    "tipo": "int",
-    "ambito": 1,
-    "linea": 5
-  },
-  {
-    "nombre": "paso",
-    "tipo": "int",
-    "ambito": 2,
-    "linea": 11
-  }
-]
-```
-
-**Error de tipos (`10_cadena_en_entero.c`):**
-```text
-Analizador semántico: reglas S1 a S10.
-[
-  {
-    "nombre": "n",
-    "tipo": "int",
-    "ambito": 0,
-    "linea": 3
-  }
-]
-ERROR semantico línea 3, col 1: No se puede asignar un cadena a una variable int
-```
-
-</details>
+![Ejecución del analizador semántico: ámbitos válidos y error de tipos](docs/img/demo_semantico.png)
 
 ### 4. Casos de prueba
 
@@ -219,6 +152,8 @@ python -m unittest pruebas.test_ast pruebas.test_convertidor
 python -m unittest pruebas.test_semantico pruebas.test_semantico_s9 pruebas.test_tipos
 python -m unittest pruebas.test_ejecutor
 ```
+
+![Ejecutor del corpus y suite de pruebas unitarias](docs/img/demo_pruebas.png)
 
 ## Corpus de pruebas
 
