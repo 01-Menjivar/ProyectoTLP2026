@@ -1,6 +1,7 @@
 # Contratos entre módulos (Fase 1)
 
 Este documento define las estructuras de datos e interfaces públicas compartidas entre los módulos del proyecto.
+El contrato del léxico, el árbol y el verificador de español de la fase 2 se encuentra en [Gramática del español v1](gramatica_espanol.md).
 
 ## 1. Token
 

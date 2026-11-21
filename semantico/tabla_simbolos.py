@@ -24,12 +24,16 @@ class TablaSimbolos:
         self._ambitos.pop()
         self._identificadores.pop()
 
-    def declarar(self, nombre: str, tipo: str, linea: int) -> bool:
+    def declarar(self, nombre: str, tipo: str, linea: int, *,
+                 genero: Optional[str] = None, numero: Optional[str] = None,
+                 persona: Optional[int] = None) -> bool:
         """Registra un nombre; devuelve False si ya existe en el ámbito actual."""
         if nombre in self._ambitos[-1]:
             return False
         simbolo = {"nombre": nombre, "tipo": tipo,
                    "ambito": self._identificadores[-1], "linea": linea}
+        rasgos = {"genero": genero, "numero": numero, "persona": persona}
+        simbolo.update((k, v) for k, v in rasgos.items() if v is not None)
         self._ambitos[-1][nombre] = simbolo
         self._historial.append(simbolo)
         return True

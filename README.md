@@ -180,7 +180,15 @@ En los tres casos el programa es **sintácticamente correcto**: la gramática lo
 > [!IMPORTANT]
 > **Conclusión.** Estas verificaciones se hacen en el analizador semántico con una **tabla de símbolos**, que funciona como la memoria que a la CFG le falta. Esto conecta con los lenguajes sensibles al contexto (tipo 1), cuyas reglas pueden depender del contexto en que aparece cada símbolo. Un compilador reparte así el trabajo entre los niveles de la jerarquía: lenguajes regulares para el lexer, libres de contexto para el parser y verificaciones sensibles al contexto en la fase semántica.
 
-Esa frontera es la que se retoma en la Fase 2: en el español, la concordancia de género y número a distancia es otra dependencia de contexto que una CFG no puede expresar.
+## Fase 2 · Español (P3)
+
+Si vas a implementar el parser o a conectar el léxico español, empieza por el [README de relevo de P3 a P4](docs/README_fase2.md). Incluye el estado del proyecto, un ejemplo ejecutable y los resultados esperados al integrar los módulos.
+
+La [gramática v1 y la sección del informe](docs/gramatica_espanol.md) incluyen las producciones para P4 y P5, el contrato del árbol y el análisis de los límites de la CFG. El verificador compara el verbo con el núcleo del sujeto y revisa la concordancia nominal en cada frase. Se prueba con árboles construidos según el contrato.
+
+```sh
+python -m unittest pruebas.test_concordancia -v
+```
 
 ## Documentación
 
