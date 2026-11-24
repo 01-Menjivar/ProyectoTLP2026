@@ -3,9 +3,11 @@
 Uso (desde la raíz del repositorio):
     python -m comparacion.ejecutar                                   # los tres sistemas, oraciones de ejemplo
     python -m comparacion.ejecutar --sistemas propio spacy
+    python -m comparacion.ejecutar --repeticiones 5                  # tiempos: mediana de 5 corridas
     python -m comparacion.ejecutar --entrada pruebas/set_p2.json --salida salida/resultados_p1.json
 """
 import argparse
+import statistics
 import sys
 from typing import List
 
@@ -26,6 +28,14 @@ def resumen(registros: List[dict]) -> str:
     return "\n".join(filas)
 
 
+def mediana_de_corridas(corridas: List[List[dict]]) -> List[dict]:
+    """Une varias corridas del mismo sistema: conserva la primera y pone la mediana de cada tiempo."""
+    base = corridas[0]
+    for i, r in enumerate(base):
+        r["tiempo_ms"] = round(statistics.median(c[i]["tiempo_ms"] for c in corridas), 3)
+    return base
+
+
 def main(argv=None) -> int:
     try:
         sys.stdout.reconfigure(encoding="utf-8")
@@ -35,7 +45,11 @@ def main(argv=None) -> int:
     ap.add_argument("--entrada", default=ENTRADA_POR_DEFECTO, help="JSON con las oraciones")
     ap.add_argument("--salida", default="salida/resultados_p1.json", help="dónde guardar los resultados")
     ap.add_argument("--sistemas", nargs="+", default=list(formato.SISTEMAS), choices=formato.SISTEMAS)
+    ap.add_argument("--repeticiones", type=int, default=1,
+                    help="repite cada sistema N veces y guarda la mediana del tiempo de cada oración")
     args = ap.parse_args(argv)
+    if args.repeticiones < 1:
+        ap.error("--repeticiones debe ser 1 o más")
 
     oraciones = formato.cargar_oraciones(args.entrada)
     registros: List[dict] = []
@@ -48,7 +62,8 @@ def main(argv=None) -> int:
                 from comparacion import spacy_sistema as modulo
             else:
                 from comparacion import hf_sistema as modulo
-            registros += modulo.ejecutar(oraciones)
+            corridas = [modulo.ejecutar(oraciones) for _ in range(args.repeticiones)]
+            registros += mediana_de_corridas(corridas)
         except Exception as error:                      # falta la librería, el modelo, no hay red...
             fallos += 1
             print(f"No se pudo correr '{sistema}': {type(error).__name__}: {error}", file=sys.stderr)

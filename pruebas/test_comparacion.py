@@ -11,7 +11,7 @@ import tempfile
 import unittest
 
 from comparacion import formato, hf_sistema, propio, spacy_sistema
-from comparacion.ejecutar import main, resumen
+from comparacion.ejecutar import main, mediana_de_corridas, resumen
 
 
 def tok(i, text, pos, dep, head, **morph):
@@ -206,6 +206,19 @@ class PruebasEjecutar(unittest.TestCase):
                 resultados = json.load(f)
         formato.validar_todos(resultados)
         self.assertEqual({r["sistema"] for r in resultados}, {"propio"})
+
+    def test_repeticiones_guardan_la_mediana_del_tiempo(self):
+        def corrida(*tiempos):
+            return [formato.registro(i, "a", 1, True, "propio", True, None, t) for i, t in enumerate(tiempos)]
+        r = mediana_de_corridas([corrida(1.0, 10.0), corrida(3.0, 30.0), corrida(2.0, 20.0)])
+        self.assertEqual([x["tiempo_ms"] for x in r], [2.0, 20.0])
+
+    def test_corre_con_repeticiones(self):
+        with tempfile.TemporaryDirectory() as d:
+            salida = os.path.join(d, "r.json")
+            self.assertEqual(main(["--sistemas", "propio", "--repeticiones", "3", "--salida", salida]), 0)
+            with open(salida, encoding="utf-8") as f:
+                self.assertEqual(len(json.load(f)), 14)       # una fila por oración, no tres
 
     def test_resumen(self):
         rs = [formato.registro(1, "a", 1, True, "propio", True, None, 1.0),

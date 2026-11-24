@@ -40,7 +40,10 @@ def _agregar(forma: str, categoria: str, **rasgos) -> None:
     elif previa.rasgos == rasgos and previa.categoria != categoria:
         HOMOGRAFOS.add(forma)            # se conserva la primera categoría registrada
     else:
-        raise ValueError(f"Léxico en conflicto para '{forma}': {previa} contra {categoria} {rasgos}")
+        raise ValueError(
+            f"Léxico en conflicto: '{forma}' ya está registrada como {previa.categoria} {previa.rasgos} y se "
+            f"intentó registrar como {categoria} {rasgos}. Una forma solo puede tener una categoría: "
+            f"quita una de las dos palabras que la generan.")
 
 
 _PLURALES_IRREGULARES = {"canción": "canciones"}     # pierden la tilde al pluralizar
