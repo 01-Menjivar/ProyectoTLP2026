@@ -1,0 +1,16 @@
+[
+  {"id": 1,  "oracion": "Yo leo el libro.", "nivel": 1, "esperado": "aceptada"},
+  {"id": 2,  "oracion": "Tú leíste el libro.", "nivel": 1, "esperado": "aceptada"},
+  {"id": 3,  "oracion": "Ella compra la casa.", "nivel": 1, "esperado": "aceptada"},
+  {"id": 4,  "oracion": "Nosotros comemos el pan.", "nivel": 1, "esperado": "aceptada"},
+  {"id": 5,  "oracion": "La niña de los vecinos lee los libros nuevos.", "nivel": 2, "esperado": "aceptada"},
+  {"id": 6,  "oracion": "Los niños leyeron bien el libro.", "nivel": 2, "esperado": "aceptada"},
+  {"id": 7,  "oracion": "El profesor escribe la carta nueva hoy.", "nivel": 2, "esperado": "aceptada"},
+  {"id": 8,  "oracion": "La maestra de los niños abre la ventana pequeña.", "nivel": 2, "esperado": "aceptada"},
+  {"id": 9,  "oracion": "La niña de los vecinos leen los libros nuevos.", "nivel": 3, "esperado": "rechazada"},
+  {"id": 10, "oracion": "Yo leo los libros nuevas.", "nivel": 3, "esperado": "rechazada"},
+  {"id": 11, "oracion": "El niño leen el libro.", "nivel": 3, "esperado": "rechazada"},
+  {"id": 12, "oracion": "Nosotros lee el libro.", "nivel": 3, "esperado": "rechazada"},
+  {"id": 13, "oracion": "Yo leo el libro la niña.", "nivel": 3, "esperado": "rechazada"},
+  {"id": 14, "oracion": "Los libros la niña lee.", "nivel": 3, "esperado": "rechazada"}
+]
