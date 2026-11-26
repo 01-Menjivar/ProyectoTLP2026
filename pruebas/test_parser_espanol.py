@@ -1,4 +1,4 @@
-"""Pruebas de P4 para el parser descendente recursivo del español v1."""
+"""Pruebas unitarias para el parser descendente recursivo del español v1."""
 import unittest
 
 from lexer.lexer import Token

@@ -3,15 +3,13 @@
 Un modelo de HuggingFace para español, como este, solo ETIQUETA cada palabra con su categoría
 gramatical (sustantivo, verbo...). No analiza la estructura ni la concordancia. Para compararlo con
 la gramática se convierte esa secuencia de etiquetas en "aceptada" o "rechazada": se acepta si las
-categorías, en orden, encajan en el esqueleto de la gramática v1. Esa conversión es una DECISIÓN
-DEL EQUIPO (hay que acordarla con P2). Por construcción, este sistema no puede detectar errores de
-concordancia: eso es justo lo que se quiere mostrar en la comparación.
+categorías, en orden, encajan en el esqueleto de la gramática v1. Por construcción, este sistema no
+puede detectar errores de concordancia: eso es justo lo que se quiere mostrar en la comparación.
 
     O  ::= (PRON | SN) V [ADV] SN [ADV]
     SN ::= DET N {ADJ} {PREP DET N {ADJ}}
 
-El modelo es un parámetro (--modelo). No pude comprobar aquí que el modelo por defecto se
-descargue; si falla, prueba con otro etiquetador de UPOS para español.
+El modelo puede cambiarse si se requiere probar otro etiquetador de UPOS para español.
 
 Uso:
     python -m comparacion.hf_sistema "La niña de los vecinos lee los libros nuevos."

@@ -1,4 +1,4 @@
-"""Pruebas de la comparación con spaCy y HuggingFace (Fase 2, P1).
+"""Pruebas de la comparación con spaCy y HuggingFace (Fase 2).
 
 Prueban la lógica de decisión con datos hechos a mano, así que NO necesitan spaCy ni
 HuggingFace instalados. Desde la raíz del repositorio:

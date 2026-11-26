@@ -68,7 +68,7 @@ def main(argv=None) -> int:
             fallos += 1
             print(f"No se pudo correr '{sistema}': {type(error).__name__}: {error}", file=sys.stderr)
 
-    formato.validar_todos(registros)                    # el validador corto que pide el plan
+    formato.validar_todos(registros)
     formato.guardar(registros, args.salida)
     print(resumen(registros))
     print(f"\n{len(registros)} resultados válidos guardados en {args.salida}")

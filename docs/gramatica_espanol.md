@@ -11,7 +11,7 @@ SP ::= PREP SN
 SV ::= ( V_PRES | V_PRET ) [ ADV ] SN [ ADV ]
 ```
 
-Los dos tiempos son presente y pretérito perfecto simple de indicativo. Los pronombres personales de sujeto permiten contrastar las tres personas. La gramática modela categorías y concordancia, sin comprobar selección léxica o plausibilidad. Los adjetivos van después del nombre y los adverbios modifican al verbo. Cada frase preposicional modifica al núcleo nominal precedente y puede contener otra frase nominal. Para el parser basta mirar la próxima categoría en cada alternativa. P4 debe consumir toda la entrada. P1 puede retirar un punto final y representar el fin como EOF fuera del árbol.
+Los dos tiempos son presente y pretérito perfecto simple de indicativo. Los pronombres personales de sujeto permiten contrastar las tres personas. La gramática modela categorías y concordancia, sin comprobar selección léxica o plausibilidad. Los adjetivos van después del nombre y los adverbios modifican al verbo. Cada frase preposicional modifica al núcleo nominal precedente y puede contener otra frase nominal. Para el parser basta mirar la próxima categoría en cada alternativa. El parser debe consumir toda la entrada; el lexer puede retirar un punto final y representar el fin como `EOF` fuera del árbol.
 
 | Oración | Resultado según v1 |
 |---|---|
@@ -23,11 +23,11 @@ Los dos tiempos son presente y pretérito perfecto simple de indicativo. Los pro
 | La niña lee los libros nuevas. | Rechazo semántico por género en el objeto. |
 | Lee el libro. | Rechazo sintáctico por ausencia de sujeto explícito. |
 
-## Contrato entre P1, P3 y P4
+## Estructura del árbol y tabla léxica
 
-P4 construye un `parser.nodo.Nodo` por cada no terminal y cada categoría terminal presente. Los hijos siguen el orden de la producción. Las opciones ausentes se omiten y las repeticiones son hijos directos. Cada hoja lleva el lexema original en `valor["lexema"]`, la columna en `valor["columna"]` y la línea en `linea`, ambas desde 1. Por ejemplo, «Yo leo el libro» da `O(PRON, SV(V_PRES, SN(DET, N)))`.
+El parser construye un `parser.nodo.Nodo` por cada no terminal y cada categoría terminal presente. Los hijos siguen el orden de la producción. Las opciones ausentes se omiten y las repeticiones son hijos directos. Cada hoja lleva el lexema original en `valor["lexema"]`, la columna en `valor["columna"]` y la línea en `linea`, ambas desde 1. Por ejemplo, «Yo leo el libro» da `O(PRON, SV(V_PRES, SN(DET, N)))`.
 
-P1 registra las formas en una `TablaSimbolos` con la clave `CATEGORIA:forma` normalizada con `forma.casefold()`. Las categorías distinguen homógrafos de clases o tiempos distintos. El léxico v1 usa una sola lectura por clave y formas con los siguientes rasgos.
+El lexer registra las formas en una `TablaSimbolos` con la clave `CATEGORIA:forma` normalizada con `forma.casefold()`. Las categorías distinguen homógrafos de clases o tiempos distintos. El léxico v1 usa una sola lectura por clave y formas con los siguientes rasgos.
 
 | Categoría | Rasgos para concordancia |
 |---|---|
@@ -42,7 +42,7 @@ El género toma los valores `m` y `f`, el número `sg` y `pl`, y la persona los 
 tabla.declarar("V_PRES:leo", "V_PRES", 1, numero="sg", persona=1)
 ```
 
-Después de un análisis sintáctico completo, P4 llama a `semantico.concordancia.verificar_concordancia(oracion, tabla)`. Una lista vacía indica concordancia válida. Cada discrepancia produce un diagnóstico con fase, línea, columna y causa en la palabra dependiente. Una entrada léxica requerida ausente o incompleta produce `ValueError` para que un fallo de integración no se contabilice como rechazo de una oración. P5 puede incorporar las producciones y estas dos condiciones de aceptación en ambos prompts:
+Después de un análisis sintáctico completo, el parser llama a `semantico.concordancia.verificar_concordancia(oracion, tabla)`. Una lista vacía indica concordancia válida. Cada discrepancia produce un diagnóstico con fase, línea, columna y causa en la palabra dependiente. Una entrada léxica requerida ausente o incompleta produce `ValueError` para que un fallo de integración no se contabilice como rechazo de una oración. Para la evaluación con LLM, se incorporan las producciones y estas dos condiciones de aceptación en los prompts:
 
 1. En cada SN, DET y cada ADJ comparten género y número con su propio N, también dentro de SP.
 2. El verbo comparte número y persona con el N o PRON que encabeza el sujeto.

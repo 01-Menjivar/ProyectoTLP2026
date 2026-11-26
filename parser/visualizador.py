@@ -1,5 +1,5 @@
 """
-Visualizador de árboles (Fase 2, P1): dibuja el árbol de una oración como texto, SVG o DOT.
+Visualizador de árboles (Fase 2): dibuja el árbol de una oración como texto, SVG o DOT.
 
 Sirve con cualquier árbol de `Nodo`, pero está pensado para el de la gramática española v1:
 cada hoja es una categoría (DET, N, V_PRES...) cuyo `valor` es {"lexema", "columna"}.

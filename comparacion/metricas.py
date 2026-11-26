@@ -1,4 +1,4 @@
-"""Métricas cuantitativas, clasificación de errores y gráficas para la evaluación (Fase 2, P2).
+"""Métricas cuantitativas, clasificación de errores y gráficas para la evaluación (Fase 2).
 
 Calcula precisión, cobertura (recall), tasa de rechazo correcto, exactitud, F1, tiempos,
 clasificación de errores (TP, FP, FN, TN y causas de rechazo) y errores de etiquetado POS

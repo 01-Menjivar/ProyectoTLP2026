@@ -1,4 +1,4 @@
-"""Integración del árbol de P4, las entradas léxicas de P1 y las reglas de P3."""
+"""Pruebas de concordancia nominal y verbal sobre el árbol sintáctico."""
 import unittest
 
 from parser.nodo import Nodo

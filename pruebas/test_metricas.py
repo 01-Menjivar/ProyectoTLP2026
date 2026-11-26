@@ -1,4 +1,4 @@
-"""Pruebas del set oficial de P2 y del módulo de métricas y gráficas (Fase 2, P2).
+"""Pruebas del set oficial de oraciones y del módulo de métricas y gráficas (Fase 2).
 
 Desde la raíz del repositorio:
     python -m unittest pruebas.test_metricas

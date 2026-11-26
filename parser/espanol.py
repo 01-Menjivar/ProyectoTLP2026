@@ -50,7 +50,7 @@ class ParserEspanol:
 
     @staticmethod
     def hoja(token: Token) -> Nodo:
-        """Convierte un token léxico en una hoja compatible con P3."""
+        """Convierte un token léxico en una hoja compatible con el verificador."""
         return Nodo(
             token.tipo,
             valor={"lexema": token.lexema, "columna": token.columna},
@@ -62,7 +62,7 @@ class ParserEspanol:
         sujeto = self.hoja(self.avanzar()) if self.es("PRON") else self.sintagma_nominal()
         predicado = self.sintagma_verbal()
 
-        # P1 puede retirar el punto final o entregarlo como PUNTO antes del EOF.
+        # El lexer puede retirar el punto final o entregarlo como PUNTO antes del EOF.
         if self.es("PUNTO"):
             self.avanzar()
         self.esperar("EOF", "el fin de la oración")
@@ -124,7 +124,7 @@ def tokens_a_arbol(tokens: Sequence[Token]) -> Tuple[Optional[Nodo], List[dict]]
 
 
 def analizar(tokens: Sequence[Token], tabla: TablaSimbolos) -> Tuple[Optional[Nodo], List[dict]]:
-    """Analiza la sintaxis y, si es válida, ejecuta la concordancia de P3."""
+    """Analiza la sintaxis y, si es válida, ejecuta la verificación de concordancia."""
     arbol, errores = tokens_a_arbol(tokens)
     if arbol is None:
         return None, errores

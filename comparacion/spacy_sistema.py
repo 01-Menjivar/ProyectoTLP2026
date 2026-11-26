@@ -1,8 +1,7 @@
 """spaCy (es_core_news_sm) como sistema a comparar.
 
 spaCy NO rechaza oraciones: siempre devuelve un análisis. Para compararlo con una gramática
-hay que convertir ese análisis en "aceptada" o "rechazada". Esa conversión es una DECISIÓN DEL
-EQUIPO (hay que acordarla con P2, que calcula las métricas). La regla de esta versión:
+hay que convertir ese análisis en "aceptada" o "rechazada". Esa conversión sigue la siguiente regla:
 
     R1  la raíz del análisis es un verbo
     R2  la raíz tiene sujeto (nsubj)

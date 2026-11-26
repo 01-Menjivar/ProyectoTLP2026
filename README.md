@@ -1,15 +1,16 @@
 <div align="center">
 
-# Analizador Léxico y Semántico de mini-C
+# Analizador Léxico, Sintáctico y Semántico (mini-C y Español v1)
 
-**Teoría de Lenguajes de Programación (TLP02-2026) — Fase 1**
+**Teoría de Lenguajes de Programación (TLP02-2026) — Fase 1 y Fase 2**
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Dependencias](https://img.shields.io/badge/Dependencias-Ninguna-2EA44F?style=for-the-badge)
-![Corpus](https://img.shields.io/badge/Corpus-29%2F29_programas-0969DA?style=for-the-badge)
-![Pruebas](https://img.shields.io/badge/Pruebas_unitarias-99_pasando-2EA44F?style=for-the-badge)
+![Dependencias](https://img.shields.io/badge/Núcleo-Sin_dependencias-2EA44F?style=for-the-badge)
+![Corpus](https://img.shields.io/badge/mini--C-29%2F29_programas-0969DA?style=for-the-badge)
+![Set Español](https://img.shields.io/badge/Español_v1-66_oraciones-6A3AA3?style=for-the-badge)
+![Pruebas](https://img.shields.io/badge/Pruebas_unitarias-184_pasando-2EA44F?style=for-the-badge)
 
-[Arquitectura](#arquitectura-del-compilador) · [Cómo ejecutar](#cómo-ejecutar) · [Casos de prueba](#4-casos-de-prueba) · [Corpus](#corpus-de-pruebas) · [Reflexión CFG](#reflexión-qué-verificaciones-no-puede-expresar-una-cfg) · [Documentación](#documentación)
+[Arquitectura](#arquitectura-del-compilador) · [Fase 1 · mini-C](#cómo-ejecutar) · [Fase 2 · Español y Evaluación](#fase-2--gramática-del-español-nlp-y-llm) · [Documentación](#documentación)
 
 </div>
 
@@ -63,11 +64,12 @@ flowchart LR
 
 ```text
 ProyectoTLP2026/
-├── lexer/          analizador léxico (lexer.py) y ejemplo de salida JSON
-├── parser/         representación AST (nodo.py) y convertidor de tokens a AST (convertidor.py)
-├── semantico/      analizador semántico (semantico.py), tabla de símbolos y reglas de tipos
-├── pruebas/        ejecutor del corpus (ejecutor.py), pruebas unitarias y programas .c / AST de ejemplo
-├── docs/           especificación formal de tokens, definición de mini-C, contratos y capturas (img/)
+├── lexer/          analizador léxico mini-C (lexer.py) y léxico/lexer del español v1 (espanol.py, lexicon_es.py)
+├── parser/         AST (nodo.py), convertidor mini-C (convertidor.py), parser español (espanol.py) y visualizador (visualizador.py)
+├── semantico/      analizador semántico mini-C (semantico.py), tabla de símbolos, tipos y concordancia española (concordancia.py)
+├── comparacion/    evaluación frente a spaCy, HuggingFace, métricas/gráficas (metricas.py) y experimento LLM (llm_experimento.py)
+├── pruebas/        ejecutor mini-C (ejecutor.py), set oficial de 66 oraciones (set_p2.json) y 184 pruebas unitarias
+├── docs/           especificaciones formales, gramática española v1, informe final, guion de presentación y capturas (img/)
 ├── CONTRIBUTING.md guía de estilo y flujo de trabajo en Git
 └── README.md
 ```
@@ -180,20 +182,84 @@ En los tres casos el programa es **sintácticamente correcto**: la gramática lo
 > [!IMPORTANT]
 > **Conclusión.** Estas verificaciones se hacen en el analizador semántico con una **tabla de símbolos**, que funciona como la memoria que a la CFG le falta. Esto conecta con los lenguajes sensibles al contexto (tipo 1), cuyas reglas pueden depender del contexto en que aparece cada símbolo. Un compilador reparte así el trabajo entre los niveles de la jerarquía: lenguajes regulares para el lexer, libres de contexto para el parser y verificaciones sensibles al contexto en la fase semántica.
 
-## Fase 2 · Español (P3)
+## Fase 2 · Gramática del español, NLP y LLM
 
-Si vas a implementar el parser o a conectar el léxico español, empieza por el [README de relevo de P3 a P4](docs/README_fase2.md). Incluye el estado del proyecto, un ejemplo ejecutable y los resultados esperados al integrar los módulos.
+En la Fase 2 se extendió el compilador a un subconjunto formal del español (**gramática v1**, ver [docs/gramatica_espanol.md](docs/gramatica_espanol.md)) con lexer propio (`lexer/espanol.py`), parser descendente recursivo (`parser/espanol.py`), verificador de concordancia nominal y verbal a distancia (`semantico/concordancia.py`), visualizador de árboles (`parser/visualizador.py`), evaluación comparativa frente a **spaCy** y **HuggingFace** sobre un set oficial de **66 oraciones** (`pruebas/set_p2.json`) y experimento con **LLM vía API** en modos `zero-shot` y `few-shot` (`comparacion/llm_experimento.py`).
 
-La [gramática v1 y la sección del informe](docs/gramatica_espanol.md) incluyen las producciones para P4 y P5, el contrato del árbol y el análisis de los límites de la CFG. El verificador compara el verbo con el núcleo del sujeto y revisa la concordancia nominal en cada frase. Se prueba con árboles construidos según el contrato.
+### 1. Pruebas unitarias y verificación completa
+
+Ejecuta toda la suite (**184 pruebas unitarias** cubriendo Fase 1 y Fase 2) y el corpus de **29 programas mini-C**:
 
 ```sh
-python -m unittest pruebas.test_concordancia -v
+python -m unittest discover pruebas
+python -m pruebas.ejecutor
 ```
+
+### 2. Visualizador de árboles sintácticos
+
+Analiza una oración en español y dibuja el árbol en consola, SVG o DOT (sin dependencias externas; las palabras con error de concordancia se resaltan en rojo):
+
+```sh
+# Árbol en consola
+python -m parser.visualizador "La niña de los vecinos lee los libros nuevos."
+
+# Exportar a SVG (para el informe o la presentación)
+python -m parser.visualizador "La niña de los vecinos lee los libros nuevos." --svg salida/arbol.svg
+
+# Oración con error de concordancia (resaltado en rojo)
+python -m parser.visualizador "La niña de los vecinos leen los libros nuevos." --svg salida/arbol_error.svg
+
+# Exportar a DOT (Graphviz opcional)
+python -m parser.visualizador "Yo leo el libro." --dot salida/arbol.dot
+```
+
+### 3. Comparación NLP (`propio` vs `spaCy` vs `HuggingFace`)
+
+Para ejecutar los tres sistemas se requiere instalar las dependencias opcionales de NLP (`spacy`, modelo `es_core_news_sm`, `transformers`, `torch`; opcionalmente `matplotlib` para gráficas PNG adicionales):
+
+```sh
+# Solo el sistema propio (sin dependencias externas)
+python -m comparacion.ejecutar --sistemas propio --entrada pruebas/set_p2.json --salida salida/resultados_propio.json
+
+# Los tres sistemas sobre las 66 oraciones (5 repeticiones para mediana de tiempo)
+python -m comparacion.ejecutar --entrada pruebas/set_p2.json --repeticiones 5 --salida salida/resultados_p2.json
+```
+
+### 4. Métricas cuantitativas y gráficas
+
+Calcula matriz de confusión (`TP`, `FP`, `FN`, `TN`), precisión, cobertura (recall), F1, tasa de rechazo correcto, exactitud por nivel, tiempos, causas de rechazo y errores de etiquetado POS por palabra, exportando tablas Markdown, JSON y gráficas SVG/PNG en `salida/`:
+
+```sh
+python -m comparacion.metricas --resultados salida/resultados_p2.json --set pruebas/set_p2.json --outdir salida
+```
+
+### 5. Experimento con LLM vía API (`zero-shot` vs `few-shot`)
+
+Evalúa las 66 oraciones de `pruebas/set_p2.json` entregando al LLM las reglas EBNF y condiciones de concordancia de `docs/gramatica_espanol.md` sin ejemplos (`zero-shot`) y con ejemplos etiquetados (`few-shot`). No requiere librerías externas (usa `urllib.request`) y guarda prompts, todas las respuestas crudas, métricas y gráfica SVG en `comparacion/logs_llm/`.
+
+```sh
+# Opción A: Google Gemini (recomendado, tier gratuito)
+export GEMINI_API_KEY="tu_api_key"
+python -m comparacion.llm_experimento --proveedor gemini --modelo gemini-3.5-flash-lite --pausa 4
+
+# Opción B: OpenAI
+export OPENAI_API_KEY="tu_api_key"
+python -m comparacion.llm_experimento --proveedor openai --modelo gpt-4o-mini
+
+# Opción C: Anthropic (Claude)
+export ANTHROPIC_API_KEY="tu_api_key"
+python -m comparacion.llm_experimento --proveedor anthropic --modelo claude-3-5-haiku-latest
+```
+
+Para hacer una prueba rápida sobre las primeras 5 oraciones antes de correr el set completo de 66, agrega `--limite 5`.
 
 ## Documentación
 
-- [Especificación formal de tokens](docs/tokens.md): expresiones regulares, autómata numérico y errores léxicos.
+- [Informe Final · Fase 2](docs/informe_fase2.md): marco teórico, gramática v1, implementación, evaluación NLP, experimento LLM y conclusiones.
+- [Guion de Presentación y Demo en Vivo](docs/presentacion_fase2.md): estructura de diapositivas y comandos para la exposición final.
+- [Gramática del español v1](docs/gramatica_espanol.md): producciones EBNF, contrato de árbol y análisis formal de fallas.
+- [Especificación formal de tokens (mini-C)](docs/tokens.md): expresiones regulares, autómata numérico y errores léxicos.
 - [El lenguaje mini-C](docs/lenguaje_c.md): alcance del lenguaje y reglas semánticas S1 a S10.
 - [Contratos entre módulos](docs/contratos.md): formatos de token, error, AST, tabla de símbolos y funciones públicas.
-- [Índice del corpus de pruebas](pruebas/ejemplos/INDICE.md): detalle de los 29 programas de prueba.
+- [Índice del corpus de pruebas](pruebas/ejemplos/INDICE.md): detalle de los 29 programas mini-C.
 - [Guía de contribución](CONTRIBUTING.md): flujo de trabajo en Git y convenciones de código.

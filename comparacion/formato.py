@@ -1,7 +1,7 @@
-"""Formato común de resultados (plan de trabajo, Fase 2) y carga del conjunto de oraciones.
+"""Formato común de resultados (Fase 2) y carga del conjunto de oraciones.
 
 Cada resultado es un diccionario con estos campos:
-    id         identificador de la oración (el del conjunto de P2)
+    id         identificador de la oración (el del conjunto de prueba)
     oracion    texto de la oración
     nivel      1, 2 o 3 (nivel de dificultad)
     esperado   True si la oración debe ser aceptada, False si debe ser rechazada
