@@ -64,13 +64,13 @@ flowchart LR
 
 ```text
 ProyectoTLP2026/
-├── lexer/          analizador léxico mini-C (lexer.py) y léxico/lexer del español v1 (espanol.py, lexicon_es.py)
+├── lexer/          lexer de mini-C (lexer.py) y léxico/lexer del español v1 (espanol.py, lexicon_es.py)
 ├── parser/         AST (nodo.py), convertidor mini-C (convertidor.py), parser español (espanol.py) y visualizador (visualizador.py)
-├── semantico/      analizador semántico mini-C (semantico.py), tabla de símbolos, tipos y concordancia española (concordancia.py)
-├── comparacion/    evaluación frente a spaCy, HuggingFace, métricas/gráficas (metricas.py) y experimento LLM (llm_experimento.py)
-├── pruebas/        ejecutor mini-C (ejecutor.py), set oficial de 66 oraciones (set_p2.json) y 184 pruebas unitarias
-├── docs/           especificaciones formales, gramática española v1, informe final, guion de presentación y capturas (img/)
-├── CONTRIBUTING.md guía de estilo y flujo de trabajo en Git
+├── semantico/      analizador semántico mini-C (semantico.py), tabla de símbolos, tipos y concordancia (concordancia.py)
+├── comparacion/    evaluación frente a spaCy, HuggingFace, métricas (metricas.py) y experimento LLM (llm_experimento.py)
+├── pruebas/        ejecutor mini-C (ejecutor.py), set de 66 oraciones (set_p2.json) y pruebas unitarias
+├── docs/           especificaciones formales, gramática española v1 e informe final
+├── CONTRIBUTING.md guía de flujo en Git
 └── README.md
 ```
 
@@ -184,82 +184,53 @@ En los tres casos el programa es **sintácticamente correcto**: la gramática lo
 
 ## Fase 2 · Gramática del español, NLP y LLM
 
-En la Fase 2 se extendió el compilador a un subconjunto formal del español (**gramática v1**, ver [docs/gramatica_espanol.md](docs/gramatica_espanol.md)) con lexer propio (`lexer/espanol.py`), parser descendente recursivo (`parser/espanol.py`), verificador de concordancia nominal y verbal a distancia (`semantico/concordancia.py`), visualizador de árboles (`parser/visualizador.py`), evaluación comparativa frente a **spaCy** y **HuggingFace** sobre un set oficial de **66 oraciones** (`pruebas/set_p2.json`) y experimento con **LLM vía API** en modos `zero-shot` y `few-shot` (`comparacion/llm_experimento.py`).
+Extensión del compilador a un subconjunto formal del español ([gramática v1](docs/gramatica_espanol.md)) con evaluación frente a **spaCy**, **HuggingFace** y un **LLM vía API** sobre las **66 oraciones** de `pruebas/set_p2.json`.
 
-### 1. Pruebas unitarias y verificación completa
-
-Ejecuta toda la suite (**184 pruebas unitarias** cubriendo Fase 1 y Fase 2) y el corpus de **29 programas mini-C**:
+### 1. Pruebas
 
 ```sh
 python -m unittest discover pruebas
 python -m pruebas.ejecutor
 ```
 
-### 2. Visualizador de árboles sintácticos
-
-Analiza una oración en español y dibuja el árbol en consola, SVG o DOT (sin dependencias externas; las palabras con error de concordancia se resaltan en rojo):
+### 2. Visualizador de árboles
 
 ```sh
-# Árbol en consola
 python -m parser.visualizador "La niña de los vecinos lee los libros nuevos."
-
-# Exportar a SVG (para el informe o la presentación)
 python -m parser.visualizador "La niña de los vecinos lee los libros nuevos." --svg salida/arbol.svg
-
-# Oración con error de concordancia (resaltado en rojo)
 python -m parser.visualizador "La niña de los vecinos leen los libros nuevos." --svg salida/arbol_error.svg
-
-# Exportar a DOT (Graphviz opcional)
 python -m parser.visualizador "Yo leo el libro." --dot salida/arbol.dot
 ```
 
-### 3. Comparación NLP (`propio` vs `spaCy` vs `HuggingFace`)
+### 3. Comparación NLP y métricas
 
-Para ejecutar los tres sistemas se requiere instalar las dependencias opcionales de NLP (`spacy`, modelo `es_core_news_sm`, `transformers`, `torch`; opcionalmente `matplotlib` para gráficas PNG adicionales):
+Requiere las dependencias opcionales de NLP (`spacy`, `es_core_news_sm`, `transformers`, `torch`; opcionalmente `matplotlib` para PNG):
 
 ```sh
-# Solo el sistema propio (sin dependencias externas)
-python -m comparacion.ejecutar --sistemas propio --entrada pruebas/set_p2.json --salida salida/resultados_propio.json
-
-# Los tres sistemas sobre las 66 oraciones (5 repeticiones para mediana de tiempo)
+# Ejecutar los tres sistemas (propio, spaCy, HuggingFace) sobre las 66 oraciones
 python -m comparacion.ejecutar --entrada pruebas/set_p2.json --repeticiones 5 --salida salida/resultados_p2.json
-```
 
-### 4. Métricas cuantitativas y gráficas
-
-Calcula matriz de confusión (`TP`, `FP`, `FN`, `TN`), precisión, cobertura (recall), F1, tasa de rechazo correcto, exactitud por nivel, tiempos, causas de rechazo y errores de etiquetado POS por palabra, exportando tablas Markdown, JSON y gráficas SVG/PNG en `salida/`:
-
-```sh
+# Calcular métricas, tablas Markdown y gráficas SVG/PNG
 python -m comparacion.metricas --resultados salida/resultados_p2.json --set pruebas/set_p2.json --outdir salida
 ```
 
-### 5. Experimento con LLM vía API (`zero-shot` vs `few-shot`)
+*(Sin dependencias externas, puedes correr solo `--sistemas propio`.)*
 
-Evalúa las 66 oraciones de `pruebas/set_p2.json` entregando al LLM las reglas EBNF y condiciones de concordancia de `docs/gramatica_espanol.md` sin ejemplos (`zero-shot`) y con ejemplos etiquetados (`few-shot`). No requiere librerías externas (usa `urllib.request`) y guarda prompts, todas las respuestas crudas, métricas y gráfica SVG en `comparacion/logs_llm/`.
+### 4. Experimento con LLM (`zero-shot` vs `few-shot`)
+
+Usa únicamente la biblioteca estándar (`urllib.request`) y guarda prompts, respuestas y métricas en `comparacion/logs_llm/`:
 
 ```sh
-# Opción A: Google Gemini (recomendado, tier gratuito)
 export GEMINI_API_KEY="tu_api_key"
 python -m comparacion.llm_experimento --proveedor gemini --modelo gemini-3.5-flash-lite --pausa 4
-
-# Opción B: OpenAI
-export OPENAI_API_KEY="tu_api_key"
-python -m comparacion.llm_experimento --proveedor openai --modelo gpt-4o-mini
-
-# Opción C: Anthropic (Claude)
-export ANTHROPIC_API_KEY="tu_api_key"
-python -m comparacion.llm_experimento --proveedor anthropic --modelo claude-3-5-haiku-latest
 ```
 
-Para hacer una prueba rápida sobre las primeras 5 oraciones antes de correr el set completo de 66, agrega `--limite 5`.
+También admite `--proveedor openai` (`OPENAI_API_KEY`) y `--proveedor anthropic` (`ANTHROPIC_API_KEY`), así como `--limite N` para pruebas rápidas.
 
 ## Documentación
 
-- [Informe Final · Fase 2](docs/informe_fase2.md): marco teórico, gramática v1, implementación, evaluación NLP, experimento LLM y conclusiones.
-- [Guion de Presentación y Demo en Vivo](docs/presentacion_fase2.md): estructura de diapositivas y comandos para la exposición final.
-- [Gramática del español v1](docs/gramatica_espanol.md): producciones EBNF, contrato de árbol y análisis formal de fallas.
-- [Especificación formal de tokens (mini-C)](docs/tokens.md): expresiones regulares, autómata numérico y errores léxicos.
-- [El lenguaje mini-C](docs/lenguaje_c.md): alcance del lenguaje y reglas semánticas S1 a S10.
-- [Contratos entre módulos](docs/contratos.md): formatos de token, error, AST, tabla de símbolos y funciones públicas.
-- [Índice del corpus de pruebas](pruebas/ejemplos/INDICE.md): detalle de los 29 programas mini-C.
-- [Guía de contribución](CONTRIBUTING.md): flujo de trabajo en Git y convenciones de código.
+- [Informe Final · Fase 2](docs/informe_fase2.md): marco teórico, implementación, resultados experimentales y conclusiones.
+- [Gramática del español v1](docs/gramatica_espanol.md): producciones EBNF, rasgos y concordancia.
+- [Especificación de tokens (mini-C)](docs/tokens.md) y [El lenguaje mini-C](docs/lenguaje_c.md).
+- [Contratos entre módulos](docs/contratos.md) e [Índice del corpus de pruebas](pruebas/ejemplos/INDICE.md).
+- [Guía de contribución](CONTRIBUTING.md).
