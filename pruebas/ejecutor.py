@@ -10,6 +10,7 @@ Uso desde la raíz del repositorio:
     python -m pruebas.ejecutor pruebas/ejemplos/invalidos
 """
 import argparse
+import os
 import re
 import sys
 from pathlib import Path
@@ -193,12 +194,34 @@ def _nombre_mostrar(programa: Path, base: Path) -> str:
         return str(programa)
 
 
+def _usa_color(flujo: TextIO) -> bool:
+    """Indica si el flujo soporta códigos ANSI de color."""
+    if os.environ.get("NO_COLOR"):
+        return False
+    return hasattr(flujo, "isatty") and flujo.isatty()
+
+
 def ejecutar_corpus(ruta: Path = CARPETA_CORPUS_DEFECTO,
                     salida: Optional[TextIO] = None) -> Tuple[int, int, List[dict]]:
     """Ejecuta el corpus completo, imprime el detalle y devuelve `(correctos, fallidos, resultados)`."""
     flujo = salida if salida is not None else sys.stdout
+    color = _usa_color(flujo)
+    VERDE = "\033[32m" if color else ""
+    ROJO = "\033[31m" if color else ""
+    AMARILLO = "\033[33m" if color else ""
+    CIAN = "\033[36m" if color else ""
+    TENUE = "\033[2m" if color else ""
+    NEGRITA = "\033[1m" if color else ""
+    RESET = "\033[0m" if color else ""
+
     programas = buscar_programas(ruta)
     base = ruta if ruta.is_dir() else ruta.parent
+
+    if color and programas:
+        print(
+            f"\n{NEGRITA}{CIAN}=== Corpus mini-C ({len(programas)} programas) ==={RESET}",
+            file=flujo,
+        )
 
     correctos = 0
     fallidos = 0
@@ -211,9 +234,19 @@ def ejecutar_corpus(ruta: Path = CARPETA_CORPUS_DEFECTO,
         resultado["archivo"] = str(programa)
         resultados.append(resultado)
 
-        etiqueta = "[OK]   " if resultado["ok"] else "[FALLO]"
         nombre = _nombre_mostrar(programa, base)
-        print(f"{etiqueta} {nombre:<45} -> {resultado['detalle']}", file=flujo)
+        if color:
+            icono = f"{VERDE}✓ [OK]   {RESET}" if resultado["ok"] else f"{ROJO}✗ [FALLO]{RESET}"
+            if not resultado["ok"]:
+                detalle_fmt = f"{ROJO}{resultado['detalle']}{RESET}"
+            elif resultado["avisos"]:
+                detalle_fmt = f"{AMARILLO}{resultado['detalle']}{RESET}"
+            else:
+                detalle_fmt = f"{TENUE}{resultado['detalle']}{RESET}"
+            print(f"{icono} {nombre:<45} {TENUE}->{RESET} {detalle_fmt}", file=flujo)
+        else:
+            etiqueta = "[OK]   " if resultado["ok"] else "[FALLO]"
+            print(f"{etiqueta} {nombre:<45} -> {resultado['detalle']}", file=flujo)
 
         if resultado["ok"]:
             correctos += 1
@@ -223,11 +256,20 @@ def ejecutar_corpus(ruta: Path = CARPETA_CORPUS_DEFECTO,
 
     total = correctos + fallidos
     etiqueta_avisos = "aviso S9" if total_avisos == 1 else "avisos S9"
-    print(
-        f"\nResumen: {correctos} correctos, {fallidos} fallidos "
-        f"de {total} programas ({total_avisos} {etiqueta_avisos}).",
-        file=flujo,
-    )
+    if color:
+        estado_color = VERDE if fallidos == 0 else ROJO
+        marca = "✓" if fallidos == 0 else "✗"
+        print(
+            f"\n{NEGRITA}{estado_color}{marca} Resumen: {correctos}/{total} correctos, "
+            f"{fallidos} fallidos ({total_avisos} {etiqueta_avisos}).{RESET}\n",
+            file=flujo,
+        )
+    else:
+        print(
+            f"\nResumen: {correctos} correctos, {fallidos} fallidos "
+            f"de {total} programas ({total_avisos} {etiqueta_avisos}).",
+            file=flujo,
+        )
     return correctos, fallidos, resultados
 
 

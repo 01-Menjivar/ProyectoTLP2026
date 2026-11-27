@@ -21,6 +21,7 @@ Uso desde la terminal (desde la raíz del repositorio):
 """
 import argparse
 import difflib
+import os
 import re
 import sys
 import unicodedata
@@ -133,6 +134,77 @@ def _rasgos(token: Token) -> str:
     return " ".join(f"{k}={v}" for k, v in LEXICON[token.lexema.casefold()].rasgos.items())
 
 
+def _imprimir_resultado_cli(toks, errs) -> None:
+    """Imprime tokens y errores; usa tabla con colores ANSI si stdout es un TTY."""
+    usa_color = not os.environ.get("NO_COLOR") and hasattr(sys.stdout, "isatty") and sys.stdout.isatty()
+    if not usa_color:
+        for t in toks:
+            print(f"{t.linea}:{t.columna:<6} {t.tipo:<8} {t.lexema:<12} {_rasgos(t)}")
+        for e in errs:
+            print(f"ERROR línea {e['linea']}, col {e['columna']}: {e['mensaje']}")
+        print(f"\n{len(toks)} tokens, {len(errs)} errores léxicos")
+        return
+
+    RESET = "\033[0m"
+    NEGRITA = "\033[1m"
+    TENUE = "\033[2m"
+    ROJO = "\033[31m"
+    VERDE = "\033[32m"
+    AMARILLO = "\033[33m"
+    AZUL = "\033[34m"
+    MAGENTA = "\033[35m"
+    CIAN = "\033[36m"
+
+    colores_cat = {
+        "PRON": CIAN,
+        "DET": CIAN,
+        "N": f"{NEGRITA}{AZUL}",
+        "V_PRES": f"{NEGRITA}{MAGENTA}",
+        "V_PRET": f"{NEGRITA}{MAGENTA}",
+        "ADJ": VERDE,
+        "ADV": AMARILLO,
+        "PREP": AMARILLO,
+        "PUNTO": TENUE,
+    }
+
+    filas = [(f"{t.linea}:{t.columna}", t.tipo, t.lexema, _rasgos(t) or "—") for t in toks]
+    w_pos = max([3] + [len(f[0]) for f in filas])
+    w_cat = max([9] + [len(f[1]) for f in filas])
+    w_lex = max([6] + [len(f[2]) for f in filas])
+    w_ras = max([19] + [len(f[3]) for f in filas])
+
+    sep = f"  {TENUE}├{'─' * (w_pos + 2)}┼{'─' * (w_cat + 2)}┼{'─' * (w_lex + 2)}┼{'─' * (w_ras + 2)}┤{RESET}"
+    top = f"  {TENUE}┌{'─' * (w_pos + 2)}┬{'─' * (w_cat + 2)}┬{'─' * (w_lex + 2)}┬{'─' * (w_ras + 2)}┐{RESET}"
+    bot = f"  {TENUE}└{'─' * (w_pos + 2)}┴{'─' * (w_cat + 2)}┴{'─' * (w_lex + 2)}┴{'─' * (w_ras + 2)}┘{RESET}"
+
+    print(f"\n{NEGRITA}{CIAN}=== Lexer español (gramática v1) ==={RESET}")
+    print(top)
+    print(
+        f"  {TENUE}│{RESET} {NEGRITA}{'Pos':<{w_pos}}{RESET} "
+        f"{TENUE}│{RESET} {NEGRITA}{'Categoría':<{w_cat}}{RESET} "
+        f"{TENUE}│{RESET} {NEGRITA}{'Lexema':<{w_lex}}{RESET} "
+        f"{TENUE}│{RESET} {NEGRITA}{'Rasgos morfológicos':<{w_ras}}{RESET} {TENUE}│{RESET}"
+    )
+    print(sep)
+    for pos, cat, lex, ras in filas:
+        c = colores_cat.get(cat, "")
+        r_fmt = f"{TENUE}{ras:<{w_ras}}{RESET}" if ras == "—" else f"{ras:<{w_ras}}"
+        print(
+            f"  {TENUE}│{RESET} {TENUE}{pos:<{w_pos}}{RESET} "
+            f"{TENUE}│{RESET} {c}{cat:<{w_cat}}{RESET} "
+            f"{TENUE}│{RESET} {NEGRITA}{lex:<{w_lex}}{RESET} "
+            f"{TENUE}│{RESET} {r_fmt} {TENUE}│{RESET}"
+        )
+    print(bot)
+
+    for e in errs:
+        print(f"  {ROJO}✗ ERROR línea {e['linea']}, col {e['columna']}: {e['mensaje']}{RESET}")
+
+    estado = VERDE if not errs else ROJO
+    marca = "✓" if not errs else "✗"
+    print(f"\n  {NEGRITA}{estado}{marca} {len(toks)} tokens, {len(errs)} errores léxicos{RESET}\n")
+
+
 if __name__ == "__main__":
     try:                                              # que las tildes se vean bien en Windows
         sys.stdout.reconfigure(encoding="utf-8")
@@ -151,8 +223,4 @@ if __name__ == "__main__":
         ap.error("da una oración entre comillas o usa --archivo")
 
     toks, errs = analizar(entrada)
-    for t in toks:
-        print(f"{t.linea}:{t.columna:<6} {t.tipo:<8} {t.lexema:<12} {_rasgos(t)}")
-    for e in errs:
-        print(f"ERROR línea {e['linea']}, col {e['columna']}: {e['mensaje']}")
-    print(f"\n{len(toks)} tokens, {len(errs)} errores léxicos")
+    _imprimir_resultado_cli(toks, errs)

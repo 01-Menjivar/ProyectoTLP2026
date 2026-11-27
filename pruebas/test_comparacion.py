@@ -5,6 +5,8 @@ HuggingFace instalados. Desde la raíz del repositorio:
 
     python -m unittest pruebas.test_comparacion
 """
+import contextlib
+import io
 import json
 import os
 import tempfile
@@ -200,7 +202,8 @@ class PruebasEjecutar(unittest.TestCase):
     def test_corre_el_sistema_propio_y_guarda_resultados_validos(self):
         with tempfile.TemporaryDirectory() as d:
             salida = os.path.join(d, "r.json")
-            codigo = main(["--sistemas", "propio", "--salida", salida])
+            with contextlib.redirect_stdout(io.StringIO()):
+                codigo = main(["--sistemas", "propio", "--salida", salida])
             self.assertEqual(codigo, 0)
             with open(salida, encoding="utf-8") as f:
                 resultados = json.load(f)
@@ -216,7 +219,9 @@ class PruebasEjecutar(unittest.TestCase):
     def test_corre_con_repeticiones(self):
         with tempfile.TemporaryDirectory() as d:
             salida = os.path.join(d, "r.json")
-            self.assertEqual(main(["--sistemas", "propio", "--repeticiones", "3", "--salida", salida]), 0)
+            with contextlib.redirect_stdout(io.StringIO()):
+                rc = main(["--sistemas", "propio", "--repeticiones", "3", "--salida", salida])
+            self.assertEqual(rc, 0)
             with open(salida, encoding="utf-8") as f:
                 self.assertEqual(len(json.load(f)), 14)       # una fila por oración, no tres
 

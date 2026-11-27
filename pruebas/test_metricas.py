@@ -3,6 +3,8 @@
 Desde la raíz del repositorio:
     python -m unittest pruebas.test_metricas
 """
+import contextlib
+import io
 import json
 import os
 import tempfile
@@ -126,7 +128,9 @@ class PruebasMetricas(unittest.TestCase):
             ruta_res = os.path.join(d, "res.json")
             formato.guardar(registros, ruta_res)
             outdir = os.path.join(d, "out")
-            self.assertEqual(metricas.main(["--resultados", ruta_res, "--outdir", outdir]), 0)
+            with contextlib.redirect_stdout(io.StringIO()):
+                rc = metricas.main(["--resultados", ruta_res, "--outdir", outdir])
+            self.assertEqual(rc, 0)
             for nombre in ("metricas_resumen.json", "metricas_tablas.md",
                            "grafica_metricas_sistemas.svg", "grafica_aciertos_por_nivel.svg",
                            "grafica_errores_sistemas.svg", "grafica_tiempos_ms.svg"):
